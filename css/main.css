@@ -1,0 +1,397 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+}
+@media (max-width: 480px) {
+  html {
+    font-size: 9px;
+  }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* helper classes */
+.spacing-bottom {
+  margin-bottom: 50px;
+}
+.spacing-top {
+  margin-top: 50px;
+}
+.spacing-v-both {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+
+/* general html elements */
+
+h1, h2, h3, h4 {
+  font-weight: 300;
+}
+h1 {
+  font-size: 24px;
+  font-size: 2.4rem;
+}
+h2 {
+  font-size: 20px;
+  font-size: 2.0rem;
+}
+h3 {
+  font-size: 18px;
+  font-size: 1.8rem;
+}
+h4 {
+  font-size: 16px;
+  font-size: 1.6rem;
+}
+
+
+img {
+  padding: 50px;
+  max-width: 100%;
+  width: 100%;
+}
+
+blockquote {
+  margin: 50px;
+  border-left: 1px solid;
+}
+
+blockquote p {
+  padding: 15px 25px;
+  margin: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 50px 0;
+}
+
+th, td {
+  padding: 5px;
+}
+
+th {
+  border-bottom: 1px solid;
+}
+
+tr:nth-child(2n) td {
+  background: #eee;
+}
+
+pre {
+  margin: 50px;
+}
+
+@media (max-width: 480px) {
+  img {
+    padding: 30px 0;
+  }
+
+  blockquote {
+    margin: 30px 0;
+  }
+
+  table {
+    margin: 30px 0;
+  }
+
+  pre {
+    margin: 30px 0;
+  }
+}
+
+a {
+  text-decoration: underline;
+  font-weight: 700;
+  color: inherit;
+}
+
+/* author is just for schema.org */
+author {
+  display: none;
+}
+
+
+
+/* general navigation styling */
+
+.navigation {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navigation::before, .navigation::after {
+  content: "";
+  display: block;
+  height: 0px;
+  border-top: 1px solid;
+  flex-grow: 2;
+  vertical-align: middle;
+}
+
+.navigation li {
+  border-left: 1px solid;
+  padding: 0 15px;
+  font-weight: bold;
+}
+.navigation li a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.navigation li:last-of-type {
+  border-right: 1px solid;
+}
+
+/* navigation styling of links on frontpage */
+.front .navigation a {
+  color: #fff;
+}
+
+/* front page */
+
+.bg {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  background: #000;
+  color: #ccc;
+  background: url('http://lucapollasto.altervista.org/wp-content/uploads/2015/03/male-actor-johnny-depp-johnny-depp-photography-black-and-white-portrait-face-mono.jpg');
+  background-size: cover;
+}
+
+.front .flex-wrapper {
+  position: absolute;
+  top:0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.front .flex-wrapper .empty {
+  width: 60%;
+}
+
+
+.front .image {
+  background: url('https://farm4.staticflickr.com/3769/13532179793_de113e9d85_b.jpg');
+  background: url('http://lucapollasto.altervista.org/wp-content/uploads/2015/03/male-actor-johnny-depp-johnny-depp-photography-black-and-white-portrait-face-mono.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top left;
+  width: 100%;
+  height: 100%;
+}
+
+.front .image img {
+  display: none;
+  padding: 0;
+}
+
+.front .text-box {
+  width: 40%;
+  border: 30px solid rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.8);
+  margin-right: 30px;
+  max-height: 100%;
+  overflow-y: scroll;
+  -moz-background-clip: content;
+  -webkit-background-clip: content;
+  background-clip: content-box;
+}
+
+@media (max-width: 950px) {
+  .bg {
+    overflow-y: scroll;
+  }
+
+  .front .flex-wrapper {
+    display: block;
+    position: static;
+  }
+
+  .front .image img {
+    display: block;
+  }
+  .front .image {
+    background: #000;
+  }
+
+  .front .empty {
+    display: none;
+  }
+
+  .front .text-box {
+    width: 80%;
+    margin: 0;
+    position: relative;
+    top: 80%;
+    margin:auto;
+    overflow-y: visible;
+    max-height: initial;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .front .text-box {
+    width: 100%;
+  }
+}
+
+
+
+.front .content {
+  height: 100%;
+  width: 100%;
+}
+
+.front .content a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
+/* blog pages */
+
+.page {
+  max-width: 1000px;
+  padding: 20px;
+  margin: auto;
+}
+
+.page .header a {
+  text-decoration: none;
+}
+
+
+.page .header h1 {
+  text-align: right;
+  margin: 0;
+  margin-bottom: 5px;
+  font-weight: 300;
+  font-size: 38px;
+  font-size: 3.8rem;
+}
+.page .header h2 {
+  text-align: right;
+  color: #aaa;
+  margin-top: 0;
+  font-weight: 300;
+  font-size: 18px;
+  font-size: 1.8rem;
+}
+
+@media (max-width: 480px) {
+  .page .header h1 {
+    /*font-size: 32px;
+    font-size: 3.2rem;*/
+  }
+}
+
+
+/* post detail site */
+.post-details {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.post-details h1 {
+  margin-bottom: 5px;
+  font-size: 32px;
+  font-size: 3.2rem;
+}
+
+.post-details time {
+  color: #aaa;
+  font-size: 18px;
+  font-size: 1.8rem;
+}
+
+/* post listing on blog index page */
+ul.post-list {
+  margin: 0;
+  margin-left: 30px;
+  padding: 0;
+  list-style: none;
+}
+
+
+ul.post-list li {
+  margin-bottom: 15px;
+  display: flex;
+}
+
+ul.post-list time {
+  font-weight: 300;
+  color: #aaa;
+}
+
+ul.post-list .separater {
+  padding: 0 10px;
+}
+
+ul.post-list a {
+  color: inherit;
+  text-decoration: none;
+  display: inline-block;
+  vertical-align: top;
+}
+
+ul.post-list .title {
+  text-decoration: none;
+  color: inherit;
+  font-weight: 400;
+}
+
+ul.post-list .description {
+  font-size: 15px;
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+@media (max-width: 480px) {
+  ul.post-list {
+    margin-left: 0;
+  }
+
+  ul.post-list li {
+    display: list-item;
+    margin-bottom: 30px
+  }
+
+  ul.post-list .separater {
+    display: none;
+  }
+
+  ul.post-list time {
+    display: block;
+    font-size: 14px;
+    font-size: 1.4rem;
+  }
+}

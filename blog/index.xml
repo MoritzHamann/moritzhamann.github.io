@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on My New Hugo Site</title>
+    <link>http://dev.moritzhamann.com/blog/index.xml</link>
+    <description>Recent content in Blog on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Jan 2017 01:36:22 +0100</lastBuildDate>
+    <atom:link href="http://dev.moritzhamann.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Diving deep into the LuaJIT bytecode Pt 1</title>
+      <link>http://dev.moritzhamann.com/blog/2017/01/diving-deep-into-the-luajit-bytecode-pt-1</link>
+      <pubDate>Mon, 16 Jan 2017 01:05:34 +0100</pubDate>
+      
+      <guid>http://dev.moritzhamann.com/blog/2017/01/diving-deep-into-the-luajit-bytecode-pt-1</guid>
+      <description>
+
+&lt;h1 id=&#34;hello-world&#34;&gt;Hello World&lt;/h1&gt;
+
+&lt;p&gt;Testing&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Formating article</title>
+      <link>http://dev.moritzhamann.com/blog/2017/01/formating-article</link>
+      <pubDate>Mon, 16 Jan 2017 01:05:34 +0100</pubDate>
+      
+      <guid>http://dev.moritzhamann.com/blog/2017/01/formating-article</guid>
+      <description>
+
+&lt;h1 id=&#34;headline-1&#34;&gt;Headline 1&lt;/h1&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;testing a blockquote as asldjkfasdl l;aksdflk; asdflj;kasdfljk;asdjl
+sadflkad asdf df sad fafslk fjalskdlkjasks asdlkfj with break&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;Lorem ipsum&lt;/em&gt; dolor sit amet, consectetur adipiscing elit. Nunc efficitur id turpis ut porttitor. Nunc et sapien tortor. Maecenas consequat faucibus facilisis. Vestibulum ac orci sed dui tincidunt lacinia. Vestibulum maximus eros eget nisl molestie posuere. Fusce aliquet est pellentesque, pellentesque purus id, elementum massa. Vivamus sed turpis et ipsum vestibulum venenatis ac vitae nibh. Ut pharetra dolor mauris, sit amet egestas enim sodales sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a mollis lectus, nec lobortis sapien. Etiam at maximus ex, eu hendrerit nisi. Praesent in porta tellus. Sed velit ligula, suscipit sed dui vitae, pharetra commodo dolor. Morbi nec interdum ligula. Sed eu pretium neque. Cras vel tincidunt orci.&lt;/p&gt;
+
+&lt;h2 id=&#34;headline-2&#34;&gt;Headline 2&lt;/h2&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Tables&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Are&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Cool&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;col 3 is&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;right-aligned&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;$1600&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;col 2 is&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;centered&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;$12&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;zebra stripes&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;are neat&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;$1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;Lorem ipsumi&lt;/strong&gt; dolor sit amet, consectetur adipiscing elit. Nunc efficitur id turpis ut porttitor. Nunc et sapien tortor. Maecenas consequat faucibus facilisis. Vestibulum ac orci sed dui tincidunt lacinia. Vestibulum maximus eros eget nisl molestie posuere. Fusce aliquet est pellentesque, pellentesque purus id, elementum massa. Vivamus sed turpis et ipsum vestibulum venenatis ac vitae nibh. Ut pharetra dolor mauris, sit amet egestas enim sodales sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a mollis lectus, nec lobortis sapien. Etiam at maximus ex, eu hendrerit nisi. Praesent in porta tellus. Sed velit ligula, suscipit sed dui vitae, pharetra commodo dolor. Morbi nec interdum ligula. Sed eu pretium neque. Cras vel tincidunt orci.&lt;/p&gt;
+
+&lt;h3 id=&#34;headline-3&#34;&gt;Headline 3&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var s = &amp;quot;JavaScript syntax highlighting&amp;quot;;
+alert(s);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;del&gt;Lorem ipsum&lt;/del&gt; dolor sit amet, consectetur adipiscing elit. Nunc efficitur id turpis ut porttitor. Nunc et sapien tortor. Maecenas consequat faucibus facilisis. Vestibulum ac orci sed dui tincidunt lacinia. Vestibulum &lt;a href=&#34;http://www.google.de&#34; target=&#34;_blank&#34;&gt;maximus&lt;/a&gt; eros eget nisl molestie posuere. Fusce aliquet est pellentesque, pellentesque purus id, elementum massa. Vivamus sed turpis et ipsum vestibulum venenatis ac vitae nibh. Ut pharetra dolor mauris, sit amet egestas enim sodales sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a mollis lectus, nec lobortis sapien. Etiam at maximus ex, eu hendrerit nisi. Praesent in porta tellus. Sed velit ligula, suscipit sed dui vitae, pharetra commodo dolor. Morbi nec interdum ligula. Sed eu pretium neque. Cras vel tincidunt orci.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://www.pixelstalk.net/wp-content/uploads/2016/08/Background-Pictures-For-Websites-Computer.jpg&#34; alt=&#34;random picture&#34; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&#34;headline-4&#34;&gt;Headline 4&lt;/h5&gt;
+
+&lt;ol&gt;
+&lt;li&gt;asdf&lt;/li&gt;
+&lt;li&gt;asdfasdf&lt;/li&gt;
+&lt;li&gt;fff
+
+&lt;ol&gt;
+&lt;li&gt;asdfasdd&lt;/li&gt;
+&lt;li&gt;asdf&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+&lt;li&gt;asdfasdf&lt;/li&gt;
+&lt;li&gt;fffsdf&lt;/li&gt;
+&lt;li&gt;asssss
+
+&lt;ul&gt;
+&lt;li&gt;dlfie&lt;/li&gt;
+&lt;li&gt;df&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
