@@ -44,6 +44,7 @@ body {
 
 h1, h2, h3, h4 {
   font-weight: 300;
+  margin-top: 30px;
 }
 h1 {
   font-size: 24px;
@@ -121,15 +122,20 @@ pre {
 
 a {
   text-decoration: underline;
-  font-weight: 700;
   color: inherit;
+}
+
+abstract {
+  width: 90%;
+  margin: 30px auto 60px auto;
+  display: block;
+  font-style: italic;
 }
 
 /* author is just for schema.org */
 author {
   display: none;
 }
-
 
 
 /* general navigation styling */
@@ -269,7 +275,7 @@ author {
 /* blog pages */
 
 .page {
-  max-width: 1000px;
+  max-width: 800px;
   padding: 20px;
   margin: auto;
 }
@@ -278,6 +284,9 @@ author {
   text-decoration: none;
 }
 
+.page .content {
+  margin: 50px 0;
+}
 
 .page .header h1 {
   text-align: right;
