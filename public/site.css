@@ -1,0 +1,137 @@
+html {
+    font-family: monospace;
+    font-size: 14px;
+}
+body {
+    max-width: 800px;
+    line-height: 1.4;
+    margin: 1rem auto;
+}
+
+a {
+    text-decoration: none;
+    border-bottom: 1px solid;
+    color: #000;
+}
+
+/* navigation */
+nav {
+    /* background-color: #000; */
+    /* color: #fff; */
+    padding: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+nav a {
+    /* color: #fff; */
+}
+
+/* page header */
+header h1 {
+    border-bottom: solid 1px;
+}
+
+header p {
+    font-style: italic;
+}
+
+header details {
+    padding: 0.5rem;
+    border: 1px dashed;
+}
+
+
+/* blog details */
+dt {
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+/* still needed? */
+dt:first-child {
+    margin: 0;
+}
+
+dd ul {
+    padding-left: 0;
+    margin: 0;
+}
+
+/* code blocks */
+pre {
+    margin: 2.5rem 1rem!important;
+    border-style: solid;
+    border-width: 2px;
+    box-shadow: 5px 5px;
+    padding: 10px;
+    background-color: #fff!important;
+}
+
+pre code {
+    background-color: #fff;
+    border: none;
+    padding: 0;
+}
+
+/* inline <code/> */
+code {
+    background-color: #ccc;
+    border: dashed 1px;
+    padding: 0px 5px
+}
+
+em {
+    background-color: yellow;
+}
+
+
+blockquote {
+    margin: 2.5rem 1rem;
+    box-shadow: 5px 5px;
+    border: solid 2px;
+    padding: 0px 10px;
+}
+
+
+table {
+    margin: 2.5rem 1rem;
+    box-shadow: 5px 5px;
+    border: solid 2px;
+    padding: 10px
+}
+
+th {
+    font-weight: bold;
+    border-bottom: solid 2px;
+}
+td,th {
+    padding: 5px 10px;
+}
+
+img {
+    max-width: 100%;
+    box-shadow: 5px 5px;
+    border: 2px solid #000;
+    margin: 1.5rem auto;
+    display: block;
+}
+
+hr {
+    border-top: 1px dashed;
+    margin: 2.5rem 0;
+}
+
+@media screen and (max-width: 800px) {
+    body {
+        padding: 0 1rem;
+    }
+    pre {
+        margin: 2.5rem 0!important
+    }
+    table {
+        margin: 2.5rem 0;
+    }
+    blockquote {
+        margin: 2.5rem 0;
+    }
+}
