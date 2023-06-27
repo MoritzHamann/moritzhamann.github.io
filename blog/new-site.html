@@ -2,8 +2,8 @@
 
 <head>
         <meta charset="utf-8" />
-        <title>New site!</title>
-        <meta name="description" content="Using metalsmith.js" />
+        <title>New site - new ambitions</title>
+        <meta name="description" content="Some bits of history on this site and an explanation why I switched from Hugo to metalsmith to generate these pages." />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href="/public/prism.css" rel="stylesheet" />
         <script src="/public/prism.js"></script>
@@ -17,29 +17,70 @@
     <main>
         <header>
             <h1>
-                New site!
+                New site - new ambitions
             </h1>
-            <p>Using metalsmith.js</p>
-            <details>
-                <summary>
-                    Details:
-                </summary>
-                <dl>
-                    <dt>Publication History:</dt>
-                    <dd>
-                        <ul>
-                            <li><time datetime="2020-11-22T12:48:49Z">2020-11-22</time>: Original publication</li>
-                        </ul>
-                    </dd>
-
-                </dl>
-            </details>
+            <p><b>Summary:</b> Some bits of history on this site and an explanation why I switched from Hugo to metalsmith to generate these pages.</p>
         </header>
 
 
         <article style="margin-top: 2.5rem;">
-            <p>Testing</p>
+            <p>Over the course of the last few weekends I finally took the time to revive this blog.
+In the process I&#39;ve scraped the old <a href="https://gohugo.io">Hugo</a> based site and redone it entirely in
+<a href="https://metalsmith.io">metalsmith</a>.</p>
+<p>This post tries to shed some background on the reasons (spoiler: personal preferences), how metalsmith
+is set up for this page and what I&#39;m planning to publish going forward.</p>
+<h2 id="a-bit-of-history">A bit of history</h2>
+<p>When I first registered this domain, it was mostly to reserve it for the future. I was too lazy to
+actually set up anything spectacular (even though I was working as a web developer during this time).
+The domain was pointed towards an <a href="https://about.me">about.me</a> page, which was the simplest solution at the time.
+It allowed me to say a few words about myself, and host a CV in the form of a PDF.</p>
+<p>However, gradually I&#39;ve become more interested in actually hosting a technical blog and started to look into possible options.
+At work I was building mostly sites using WordPress which could have worked well at the time, but would required
+a whole hosting solution (including support for PHP). I was aware of Github pages at the time, and given that there was no
+need to update the Blog by non-technical people, I&#39;ve decided to go down the route of a static site generator.</p>
+<h3 id="go-hugo-go">Go Hugo go!</h3>
+<p>Enter <a href="https://gohugo.io">Hugo</a>. While I hadn&#39;t written anything serious in Go at that time (and haven&#39;t since),
+it was the (new?) cool kid on the block and how could I <strong>not</strong> give it try? Looking back, it was a bad fit from the beginning.
+It&#39;s main selling point - The world’s fastest framework for building websites - is great if you&#39;re having a site big
+enough to run into this problem (I definitely didn&#39;t).</p>
+<blockquote>
+<p>Hugo </br>
+The world’s fastest framework for building websites</p>
+<p><cite><a href="https://gohugo.io">gohugo.io</a></cite></p>
+</blockquote>
+<p>There are many <a href="https://themes.gohugo.io">existing themes</a> for Hugo, but being a web developer at that time,
+I obviously wanted to write my own. My unfamiliarity of <a href="https://pkg.go.dev/text/template">Go templates</a>,
+as well as Hugo&#39;s complex <a href="https://gohugo.io/templates/lookup-order/">template hierarchy</a> made this a frustrating experience.
+Don&#39;t get me wrong, I still think Hugo is a great tool if you&#39;re running a static site at scale (and maybe if you&#39;re
+a Go developer).</p>
+<p>I made it work in the end and was able to publish a static page to Github. But I was never fully happy with the result.
+If memory serves right, it was shortly after that I found a new job, moved to a different country and never found the time
+nor motivation to continue working or publishing to the blog.</p>
+<h3 id="static-site-generation-as-a-library">Static site generation as a library</h3>
+<p>Fast forward a few years. When 2020 Covid pandemic started, I suddenly had more time on my hand.
+Stuck at home, I&#39;ve started to rekindle with the idea of having a blog. At the same time I&#39;ve learned about
+the <a href="https://jaspervdj.be/hakyll/">Hakyll</a> project. While the name is a homage to the famous <a href="https://jekyllrb.com">Jekyll</a>
+generator, it utilizes a completely different approach to static site generation.</p>
+<p>Most static site generators (SSG) have a predefined set of features which are controlled via a configuration file.
+Hakyll on the contrary is a library of different functions and modules, which let you write your own static site generator.
+This sounds complicated at first, but in most cases is rather simple (check out some of their
+<a href="https://jaspervdj.be/hakyll/tutorials/03-rules-routes-compilers.html">examples</a>).
+The main benefit of this approach is that it allows you to easily customize your build process and
+add features to your site, which are not yet present in other, pre-defined SSGs.</p>
+<p>While I liked the idea of constructing the build of my site as a composition of different library components,
+Hakyll is written in Haskell, which I&#39;m not too familiar with.
+My attempts to build <a href="https://github.com/MoritzHamann/fss">something similar</a> in <code>F#</code> did unfortunately not turn out to
+be successful (yet :)). Once the lockdown was lifted, I moved into a new role at work and - yet again -
+forgot about the idea of reviving my blog.</p>
+<h2 id="starting-from-scratch-using-metalsmith">Starting from scratch using metalsmith</h2>
+<p>Over the last few weekends, I sat down and started from scratch. In order to customize the build process, I&#39;ve used the minimal, but extendable <a href="https://metalsmith.io">Metalsmith</a>
+library. It has a similar approach to Hakyll but is written in JavaScript, which I&#39;m more familiar with, given my day-to-day work.
+While there were a few hick ups here and there - which I&#39;ll write in the future in more detail about - it was mostly smooth sailing.
+The biggest issue at the moment is a somewhat broken live reload in the browser, which works <em>most</em> of the time.</p>
 
+            <footer>
+                <b>Published:</b> <time datetime="">2023-06-27</time>
+            </footer>
         </article>
     </main>
 </body>

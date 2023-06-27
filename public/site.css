@@ -1,30 +1,24 @@
 html {
     font-family: monospace;
     font-size: 14px;
+    line-height: 1.8;
 }
 body {
     max-width: 800px;
-    line-height: 1.4;
     margin: 1rem auto;
 }
 
 a {
     text-decoration: none;
     border-bottom: 1px solid;
-    color: #000;
+    color: #819ff2;
+}
+
+a:visited {
+    color: #819ff2;
 }
 
 /* navigation */
-nav {
-    /* background-color: #000; */
-    /* color: #fff; */
-    padding: 0.5rem;
-    margin-bottom: 2rem;
-}
-
-nav a {
-    /* color: #fff; */
-}
 
 /* page header */
 header h1 {
@@ -33,6 +27,7 @@ header h1 {
 
 header p {
     font-style: italic;
+    padding: 0rem 2rem;
 }
 
 header details {
@@ -60,10 +55,9 @@ dd ul {
 /* code blocks */
 pre {
     margin: 2.5rem 1rem!important;
-    border-style: solid;
-    border-width: 2px;
-    box-shadow: 5px 5px;
-    padding: 10px;
+    border: solid 1px #000;
+    box-shadow: 5px 5px #ccc;
+    padding: 1rem;
     background-color: #fff!important;
 }
 
@@ -86,32 +80,32 @@ em {
 
 
 blockquote {
-    margin: 2.5rem 1rem;
-    box-shadow: 5px 5px;
-    border: solid 2px;
-    padding: 0px 10px;
+    margin: 2.5rem 2.5rem;
+    border-left: solid 1px;
+    padding: 0px 1rem;
+    font-size: 1rem;
 }
 
 
 table {
     margin: 2.5rem 1rem;
-    box-shadow: 5px 5px;
-    border: solid 2px;
-    padding: 10px
+    box-shadow: 5px 5px #ccc;
+    border: solid 1px #000;
+    padding: 0.5rem
 }
 
 th {
     font-weight: bold;
-    border-bottom: solid 2px;
+    border-bottom: solid 1px;
 }
 td,th {
-    padding: 5px 10px;
+    padding: 0.3rem 0.5rem;
 }
 
 img {
     max-width: 100%;
-    box-shadow: 5px 5px;
-    border: 2px solid #000;
+    box-shadow: 5px 5px #ccc;
+    border: 1px solid #000;
     margin: 1.5rem auto;
     display: block;
 }
@@ -120,6 +114,27 @@ hr {
     border-top: 1px dashed;
     margin: 2.5rem 0;
 }
+
+article h1, article h2, article h3 {
+    margin-top: 3rem;
+}
+
+/* subsequent paragraphs */
+article > p + p {
+    margin-top: 2rem;
+}
+
+article > p + ol, article > p + ul {
+    margin: 1.5rem;
+}
+
+article footer {
+    border-top: 1px solid;
+    margin: 2rem 0;
+    padding: 1rem 0;
+    font-style: italic;
+}
+
 
 @media screen and (max-width: 800px) {
     body {
