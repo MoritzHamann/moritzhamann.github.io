@@ -1,7 +1,28 @@
+/************************************
+ * Mobile
+ ************************************/
+@media screen and (max-width: 800px) {
+    body {
+        padding: 0 1rem;
+    }
+    article table {
+        margin: 2.5rem 0!important;
+		padding: 0!important;
+    }
+    article blockquote {
+        margin: 2.5rem 0!important;
+    }
+}
+
+
+/************************************
+ * Default
+ ************************************/
+
 html {
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 1.8;
+    font-family: 'Roboto', 'Verdana', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
 }
 body {
     max-width: 800px;
@@ -10,76 +31,102 @@ body {
 
 a {
     text-decoration: none;
-    border-bottom: 1px solid;
     color: #819ff2;
 }
 
 a:visited {
     color: #819ff2;
 }
-
-/* navigation */
-
-/* page header */
-header h1 {
-    border-bottom: solid 1px;
+/*************
+ * navigation
+ *************/
+nav {
+	padding-bottom: 1rem;
+	padding-top: 1rem;
 }
 
-header p {
-    font-style: italic;
-    padding: 0rem 2rem;
-}
-
-header details {
-    padding: 0.5rem;
-    border: 1px dashed;
-}
-
-
-/* blog details */
-dt {
+nav .name {
     font-weight: bold;
-    margin-top: 1rem;
+    margin-right: 1.5rem;
 }
 
-/* still needed? */
-dt:first-child {
-    margin: 0;
+/*******************
+ * page header
+ *******************/
+header {
+    margin-bottom: 3rem;
+}
+header h1 {
+     font-size: 1.8rem;
+     margin-bottom: 0.5rem;
+}
+header .metadata {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-top: 0;
 }
 
-dd ul {
-    padding-left: 0;
-    margin: 0;
+.tocp {
+    margin-bottom: 5rem;
 }
+
+.toc .toc-item {
+	list-style: none;
+}
+.toc .toc-link {
+	color: #000000;
+    text-decoration: none;
+}
+
+/******************
+ * Blog index
+ * ****************/
+
+.blog-index article {
+    margin-bottom: 2rem;
+}
+.blog-index article h1 {
+    font-size: 1.0rem;
+    /* font-weight: normal; */
+}
+.blog-index article .description{
+    color: #555;
+}
+
+article {
+}
+
+
 
 /* code blocks */
-pre {
-    margin: 2.5rem 1rem!important;
+article pre {
+    margin: 2.5rem 0rem!important;
     border: solid 1px #000;
     box-shadow: 5px 5px #ccc;
     padding: 1rem;
     background-color: #fff!important;
 }
 
-pre code {
+article pre code {
     background-color: #fff;
     border: none;
     padding: 0;
 }
 
 /* inline <code/> */
-code {
+article code {
     background-color: #ccc;
     border: dashed 1px;
     padding: 0px 5px
 }
 
-em {
+article em {
     background-color: yellow;
 }
 
 
-blockquote {
+article blockquote {
     margin: 2.5rem 2.5rem;
     border-left: solid 1px;
     padding: 0px 1rem;
@@ -87,22 +134,22 @@ blockquote {
 }
 
 
-table {
+article table {
     margin: 2.5rem 1rem;
     box-shadow: 5px 5px #ccc;
     border: solid 1px #000;
     padding: 0.5rem
 }
 
-th {
+article th {
     font-weight: bold;
     border-bottom: solid 1px;
 }
-td,th {
+article td, article th {
     padding: 0.3rem 0.5rem;
 }
 
-img {
+article img {
     max-width: 100%;
     box-shadow: 5px 5px #ccc;
     border: 1px solid #000;
@@ -110,18 +157,37 @@ img {
     display: block;
 }
 
-hr {
+article hr {
     border-top: 1px dashed;
     margin: 2.5rem 0;
 }
 
-article h1, article h2, article h3 {
-    margin-top: 3rem;
+article ul, article ol {
+	margin: 1rem 0rem;
 }
+
+
+article h1,
+article h2,
+article h3,
+article h4,
+article h5,
+article h6 {
+	font-size: 1rem;
+	margin: 2rem 0 0 0;
+}
+article h1 {
+	font-size: 1.5rem;
+}
+article h2 {
+    font-size: 1.1rem;
+}
+
+
 
 /* subsequent paragraphs */
 article > p + p {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
 article > p + ol, article > p + ul {
@@ -136,17 +202,3 @@ article footer {
 }
 
 
-@media screen and (max-width: 800px) {
-    body {
-        padding: 0 1rem;
-    }
-    pre {
-        margin: 2.5rem 0!important
-    }
-    table {
-        margin: 2.5rem 0;
-    }
-    blockquote {
-        margin: 2.5rem 0;
-    }
-}

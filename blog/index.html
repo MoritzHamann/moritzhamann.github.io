@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Blog</title>
+        <title>Home</title>
         <meta name="description" content="Blog entries" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href="/public/prism.css" rel="stylesheet" />
@@ -9,18 +9,20 @@
         <link href="/public/site.css" rel="stylesheet" /></head>
 <body>
     <nav>
-        Site Navigation: <a href="/">About me</a> | <a href="/blog">Blog</a>
+        <span class="name">Moritz Hamann</span> <a href="/">Blog</a> | <a href="/aboutme.html">About me</a>
     </nav>
 
-    <main>
+    <main class="blog-index">
         <header>
-            <h1>Blog</h1>
+            <h1>Home</h1>
         </header>
 
-        <ul>
-            <li>2023-06-28: <a href="/blog/new-site.html">New site - new ambitions</a>
-            </li>
-        </ul>
+            <article>
+                <h1>
+                    <time datetime="">2023-06-28</time>: <a href="/blog/1-new-site.html">New site - new ambitions</a>
+                </h1>
+                <div class="description">Some bits of history on this site and an explanation why I switched from Hugo to metalsmith to generate these pages.</div>
+            </article>
     
     </main>
 </body>
