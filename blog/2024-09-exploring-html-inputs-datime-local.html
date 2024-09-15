@@ -1,0 +1,198 @@
+<html lang="en">
+
+<head>
+        <meta charset="utf-8" />
+        <title>Handling datetime entries with native HTML forms</title>
+        <meta name="description" content="Exploring different options to handle date and time values in HTML forms without the use of JavaScript." />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/public/prism.css" rel="stylesheet" />
+        <script src="/public/prism.js"></script>
+        <link href="/public/site.css" rel="stylesheet" />
+        <link href="/feed.xml" rel="alternate" type="application/rss+xml" /> 
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+
+<body class="line-numbers">
+    <nav>
+        <span class="name">Moritz Hamann</span> <a href="/">Blog</a> | <a href="/aboutme.html">About me</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Handling datetime entries with native HTML forms</h1>
+            <dl class="metadata">
+                <dt>Published:</dt> <dd><time datetime="2024-09-15T00:00:00Z">2024-09-15</time></dd>
+                <dt>TOC:</dt>
+                <dd><ol class="toc"><li class="toc-item"><a class="toc-link" href="#first-candidate-datetime-local">First candidate: "datetime-local"</a></li><li class="toc-item"><a class="toc-link" href="#second-option-typedate-and-typetime">Second option: type="date" and type="time"</a></li><li class="toc-item"><a class="toc-link" href="#other-things-to-keep-in-mind">Other things to keep in mind</a></li><li class="toc-item"><a class="toc-link" href="#why-it-matters">Why it matters</a></li></ol></dd>
+            </dl>
+        </header>
+        <article>
+            <p>Recently I needed to handle datetime objects in a small web application. In the past I've reached out for some
+JavaScript polyfill library to have a visual input widget for the user. But trying to keep the dependencies small this
+time, I've checked what new input types HTML 5 has to offer and how well they are supported out of the box.</p>
+<p>While the current support is surprisingly good, you may still want to fall back to a JavaScript alternative, especially
+when support on iOS mobile is required. Following is a summary of the experience (in 2024) for different HTML input
+types related to date and time.</p>
+<h2 id="first-candidate-datetime-local">First candidate: "datetime-local"</h2>
+<p>The most obvious first choice would be <code>&lt;input type="datetime-local"&gt;</code> which promises to handle date and time in a
+single input field. Both <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local">MDN</a> and the
+actual <a href="https://html.spec.whatwg.org/multipage/input.html#local-date-and-time-state-(type=datetime-local)">W3C
+specification</a> give a
+very detailed description of the input field, including its supported attributes. For the sake of this article, I'm not
+gonna repeat all of it here.</p>
+<p>To get a first impression how the input field looks and behave, here is an example with default values:</p>
+<figure><label>Example input: </label><input type="datetime-local"></figure>
+
+<p>On all major desktop browsers tested (Safari, Firefox, Chrome on MacOS) the UX of the keyboard input is actually quite
+good, i.e. using <code>&lt;tab&gt;</code> will jump through the input mask as you would expect, and the order of year, month and day
+corresponds to my local setting. All three browser provide a "calender" popup, which varies in quality. Firefox and
+Safari only allow to set the date, while Chrome provides input for time as well. Chrome and Firefox provide a
+"hierarchical" date selection, i.e. the user can step out of the current month to select the year and month directly,
+which can be very useful when selecting dates which are years in the past (Safari requires the user to step back one
+month at a time).</p>
+<p>Interestingly on mobile, the keyboard input is <em>skipped completely</em> and focusing the input field will directly open a
+native widget for date and time.</p>
+<p>So far so good. The "datetime-local" input field seems to handle the use case quite well. However, by default the field
+only allows the user to input or edit time values for hours and minutes (not seconds). Consulting MDN again, the reason
+for this behaviour is the default value of its <code>step</code> attribute. Quoting MDN</p>
+<blockquote>
+<p>[...] The step attribute is a number that specifies the granularity that the value must adhere to, or the special
+value any, which is described below. Only values which are equal to the basis for stepping (min if specified, value
+otherwise, and an appropriate default value if neither of those is provided) are valid. [...]</p>
+<p>[...] For datetime-local inputs, the value of step is given in seconds, with a scaling factor of 1000 (since the
+underlying numeric value is in milliseconds). The default value of step is 60, indicating 60 seconds (or 1 minute, or
+60,000 milliseconds). [...]</p>
+<p><em>- <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local#step">MDN</a></em></p>
+</blockquote>
+<p>As mentioned, the default value for <code>step</code> is "60", i.e. full minute increments. I assume, this is the reason why all
+browsers prevent the entry or modification of seconds by default. On a side note, this behaviour seems to be fully based
+on an interpretation by browser vendors, since the <a href="https://html.spec.whatwg.org/multipage/input.html#local-date-and-time-state-(type=datetime-local)">HTML 5
+specification</a>
+mentions the <code>step</code> attribute only in the context of validation and does <em>not</em> link it to the presentation and UX
+behaviour of the input field.</p>
+<p>Setting <code>step="1"</code> should give us the ability to handle seconds as well. How well is this working in practice?</p>
+<figure><label>Example input with <code>step="1"</code>: </label><input type="datetime-local" step="1"></figure>
+
+<p>All <em>desktop</em> browser tested support the <code>step</code> attribute, and setting <code>step</code> to anything other than a multiply of 60
+will allow the user to enter <em>arbitrary</em> values for seconds independent of the chosen step value. If a <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#suffering-from-a-step-mismatch">step
+mismatch</a>
+occurs,  the input field is marked as invalid (including the <code>:invalid</code> pseudo CSS class) and form submission is
+prevented. There is no dedicated UI widget which limits the entry to only valid step values (e.g. selecting only hours
+in case <code>step="3600"</code>). </p>
+<p>However it looks like the support for <em>mobile</em> browsers, is servery lacking. I.e. even after setting <code>step="1"</code>, mobile
+browser will provide <strong>no way</strong> to input time values beyond hours and minutes. I've tested this with Chrome, Firefox and
+Edge on Android, as well as Safari and Chrome on iOS. All of those browsers won't let the user enter numbers directly
+but bring up the native datetime entry field, limited to hours and minutes. What makes this even worse (in my opinion)
+is the fact that the <code>step</code> attribute is still honoured during form validation. On top of that, modifying a
+pre-populated input field will <strong>zero out</strong> the seconds, with no way to reenter those values again.</p>
+<p><strong>So in summary:</strong> using <code>&lt;input type="datetime-local"&gt;</code> works fine as long as</p>
+<ul>
+<li>the application only cares about hours and minutes</li>
+<li>or if seconds are required, mobile support is not needed</li>
+</ul>
+<details>
+<summary>More examples for different step values (including validation and serialization behaviour)</summary>
+
+<form>
+<dl>
+    <dt>Default:</dt>
+    <dd>
+        <input type="datetime-local" id="default" name="default"><br>
+        Serialization: <span id="outputDefault"></span>
+    </dd>
+    <dt><code>step="1"</code>:</dt>
+    <dd>
+        <input type="datetime-local" id="step1" name="step1" step="1"><br>
+        Serialization: <span id="outputStep1"></span>
+    </dd>
+    <dt><code>step="3600"</code>:</dt>
+    <dd>
+        <input type="datetime-local" id="step3600" name="step3600" step="3600"><br>
+        Serialization: <span id="outputStep3600"></span>
+    </dd>
+    <dt><code>step="25"</code>:</dt>
+    <dd>
+        <input type="datetime-local" id="step25" name="step25" step="25"><br>
+        Serialization: <span id="outputStep25"></span>
+    </dd>
+    <dt><code>step="15" value="2024-02-02T14:27:20"</code> (step mismatch):</dt>
+    <dd>
+        <input type="datetime-local" id="prefilled" name="prefilled" step="15" value="2024-02-02T14:27:20"><br>
+        Serialization: <span id="outputPrefilled"></span>
+    </dd>
+</dl>
+<button type="submit">Validate</button>
+</form>
+<script>
+    function el(idVal) {
+        return document.getElementById(idVal);
+    }
+    function setup(input, out) {
+        input.addEventListener("change", (ev) => out.textContent = input.value);
+        out.textContent = input.value;
+    }
+    setup(el("default"), el("outputDefault"));
+    setup(el("step1"), el("outputStep1"));
+    setup(el("step3600"), el("outputStep3600"));
+    setup(el("step25"), el("outputStep25"));
+    setup(el("prefilled"), el("outputPrefilled"));
+</script>
+</details>
+
+
+<h2 id="second-option-typedate-and-typetime">Second option: type="date" and type="time"</h2>
+<p>In addition to <code>datetime-local</code>, the HTML spec provides the <code>date</code> and <code>time</code> input types (in addition to <code>month</code> and
+<code>week</code>). Let's see if those inputs have better support on mobile browsers. If so, both could be combined to handle
+datetimes. The downside is obviously a slightly different UX, since two different input fields need to be set (with
+different popups) rather than one. Although depending on the scenario, this could also be seen as beneficial.</p>
+<p>Similar to "datetime-local", both input types support the <code>step</code> attribute. In case of of "time", it reflects number of
+seconds, for "date" it's the number of days. Setting the value to "1" gives us</p>
+<figure>
+<label>Date: </label><input type="date" step="1">
+<label>Time: </label><input type="time" step="1">
+</figure>
+
+<p>Surprisingly, using <code>&lt;input type="time" step="1"&gt;</code> on Android with Edge, Chrome and Firefox gives us a popup which
+supports the entry of seconds! It's interesting to see that the same input dialog was not used for "datetime-local". I
+haven't done any mobile development, so I don't know if this is a fundamental limitations of the underlying OS dialog.
+However, when used under iOS (Safari and Chrome) the popup is still limited to hours and minutes.</p>
+<p><strong>In summary:</strong> Splitting the entry of a datetime into its date and time parts and using the corresponding input types,
+works great except for the limitation that iOS still does not support a time resolution of seconds.</p>
+<h2 id="other-things-to-keep-in-mind">Other things to keep in mind</h2>
+<p>There are two other things I've stumbled upon when handling the form values of <code>datetime-local</code> and
+<code>time</code> on the backend.</p>
+<ol>
+<li>The serialization format of both fields can depend on their current value. While the base format is
+<code>YYYY-mm-ddTHH:MM:SS</code> (or <code>HH:MM:SS</code> for "time"), the specification states that the seconds <em>can</em> be dropped in case
+seconds are zero. For all browser I've tested this is true, so 24th of Dec. 2024, 10:24:<strong>00</strong> will serialize to
+<code>2024-12-24T10:24</code>. Hence, the backend validation and parsing logic will need to be able to handle the different
+formats.</li>
+<li>By design none of the entry field will provide timezone information, not even the current offset of the local
+environment. <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local#setting_timezones">MDN
+suggests</a> to either
+have a dropdown field with all possible offsets (which is just a horrible UX, given that the correct one can not be
+preselected) or - if the current user is logged in and has a default timezone set in the account - use a hidden input
+field with the offset.</li>
+</ol>
+<p>Not the end of the world, but definitely a small annoyance which broke my form handling at the beginning.</p>
+<h2 id="why-it-matters">Why it matters</h2>
+<p>I'm personally happy to see the support of date and time values in HTML forms improving. It provides a better unified UX
+experience throughout the web, is great for quick prototyping as well as internal tools and can reduce the download and
+execution overhead of web applications. Obviously, third party solution still have their place, especially if data entry
+is one of the key parts of the application.</p>
+<p>There is however an argument to be made about the ever growing complexity of the web standard, which makes implementing
+new browser engines more and more difficult. But I guess this is a discussion for another time.</p>
+
+            <footer>
+                    <a href="/">Back to blog</a>
+                ||
+                   <a href="/blog/2023-06-new-site.html">New site - new ambitions ></a>
+            </footer>
+        </article>
+    </main>
+</body>
+
+</html>

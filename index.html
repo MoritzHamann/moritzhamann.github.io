@@ -6,24 +6,37 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href="/public/prism.css" rel="stylesheet" />
         <script src="/public/prism.js"></script>
-        <link href="/public/site.css" rel="stylesheet" /></head>
+        <link href="/public/site.css" rel="stylesheet" />
+        <link href="/feed.xml" rel="alternate" type="application/rss+xml" /> 
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+</head>
 <body>
     <nav>
         <span class="name">Moritz Hamann</span> <a href="/">Blog</a> | <a href="/aboutme.html">About me</a>
     </nav>
 
     <main class="blog-index">
-        <header>
-            <h1>Home</h1>
-        </header>
-
             <article>
                 <h1>
-                    <time datetime="">2023-06-28</time>: <a href="/blog/1-new-site.html">New site - new ambitions</a>
+                    <time datetime="2024-09-15T00:00:00Z">2024-09-15</time>
+                    <a href="/blog/2024-09-exploring-html-inputs-datime-local.html">
+                        Handling datetime entries with native HTML forms
+                    </a>
+                </h1>
+                <div class="description">Exploring different options to handle date and time values in HTML forms without the use of JavaScript.</div>
+            </article>
+            <article>
+                <h1>
+                    <time datetime="2023-06-28T00:00:00Z">2023-06-28</time>
+                    <a href="/blog/2023-06-new-site.html">
+                        New site - new ambitions
+                    </a>
                 </h1>
                 <div class="description">Some bits of history on this site and an explanation why I switched from Hugo to metalsmith to generate these pages.</div>
             </article>
-    
     </main>
 </body>
 </html>

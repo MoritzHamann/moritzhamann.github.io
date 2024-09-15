@@ -12,6 +12,16 @@
     article blockquote {
         margin: 2.5rem 0!important;
     }
+    article ul, article ol{
+        padding: 0!important;
+    }
+    article details {
+        margin: 2.5rem 0!important;
+    }
+
+    article hr {
+        margin: 2.5rem 1rem!important;
+    }
 }
 
 
@@ -20,8 +30,10 @@
  ************************************/
 
 html {
+    /* font-family: 'Comic Neue', 'Roboto', 'Verdana', sans-serif; */
+    /* font-size: 18px; */
     font-family: 'Roboto', 'Verdana', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.5;
 }
 body {
@@ -32,10 +44,12 @@ body {
 a {
     text-decoration: none;
     color: #819ff2;
+    /* color: #fc8c03; */
 }
 
 a:visited {
     color: #819ff2;
+    /* color: #fc8c03; */
 }
 /*************
  * navigation
@@ -54,11 +68,11 @@ nav .name {
  * page header
  *******************/
 header {
-    margin-bottom: 3rem;
+    border-bottom: 1px solid #aaa;
 }
 header h1 {
-     font-size: 1.8rem;
-     margin-bottom: 0.5rem;
+     font-size: 1.5rem;
+     margin-bottom: 0rem;
 }
 header .metadata {
     color: #aaa;
@@ -67,16 +81,24 @@ header .metadata {
     margin-top: 0;
 }
 
-.tocp {
-    margin-bottom: 5rem;
+header dl.metadata dt {
+    font-weight: bold;
+}
+
+.toc {
+    padding-left: 0;
+}
+
+.toc .toc {
+    margin-left: 1rem;
 }
 
 .toc .toc-item {
-	list-style: none;
+	list-style: disclosure-closed;
 }
 .toc .toc-link {
 	color: #000000;
-    text-decoration: none;
+    /* text-decoration: none; */
 }
 
 /******************
@@ -84,19 +106,26 @@ header .metadata {
  * ****************/
 
 .blog-index article {
-    margin-bottom: 2rem;
+    margin: 1.5rem 0;
+    padding: 0;
 }
 .blog-index article h1 {
-    font-size: 1.0rem;
-    /* font-weight: normal; */
+    font-size: 1rem;
+    margin: 0;
+    font-weight: normal;
 }
+.blog-index article time {
+    font-size: 0.9rem;
+}
+
 .blog-index article .description{
-    color: #555;
+    font-style: italic;
+    font-size: 0.9rem;
 }
 
 article {
+    padding-top: 2rem;
 }
-
 
 
 /* code blocks */
@@ -116,15 +145,22 @@ article pre code {
 
 /* inline <code/> */
 article code {
-    background-color: #ccc;
-    border: dashed 1px;
-    padding: 0px 5px
+    background-color: #eee;
+    padding: 1px 5px;
+    color: #d14;
+    font-family: Menlo, Monaco, "Courier New", monospace;
+    font-size: 0.8rem;
+    border: 1px solid #ddd;
 }
 
 article em {
-    background-color: yellow;
 }
 
+article label {
+    font-style: italic;
+    font-size: 0.9rem;
+    margin: 0 0.5rem;
+}
 
 article blockquote {
     margin: 2.5rem 2.5rem;
@@ -133,12 +169,12 @@ article blockquote {
     font-size: 1rem;
 }
 
-
 article table {
     margin: 2.5rem 1rem;
     box-shadow: 5px 5px #ccc;
     border: solid 1px #000;
-    padding: 0.5rem
+    padding: 0.5rem;
+    max-width: 100%;
 }
 
 article th {
@@ -147,6 +183,11 @@ article th {
 }
 article td, article th {
     padding: 0.3rem 0.5rem;
+}
+
+article figure {
+    margin: 2.5rem 0;
+    text-align: center;
 }
 
 article img {
@@ -158,14 +199,29 @@ article img {
 }
 
 article hr {
-    border-top: 1px dashed;
-    margin: 2.5rem 0;
+    border-bottom: 1px dashed #ccc;
+    border-top: 0; 
+    margin: 2.5rem 3rem;
 }
 
 article ul, article ol {
-	margin: 1rem 0rem;
+	margin: 1.5rem 1rem;
+    padding: 0 2rem;
 }
 
+article dl {
+    margin: 1.5rem 0;
+}
+
+article dl dt {
+    font-style: italic;
+    margin-bottom: 0.4rem;
+}
+
+article dl dd {
+    margin-left: 2rem;
+    margin-bottom: 1.5rem;
+}
 
 article h1,
 article h2,
@@ -174,24 +230,41 @@ article h4,
 article h5,
 article h6 {
 	font-size: 1rem;
-	margin: 2rem 0 0 0;
+	margin: 3rem 0 0.8rem 0;
 }
 article h1 {
 	font-size: 1.5rem;
 }
 article h2 {
     font-size: 1.1rem;
+    margin-top: 3.3rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
 }
 
+article details {
+    border: 1px solid #ccc;
+    border-left: 8px solid #ccc;
+    margin: 1.5rem 0rem;
+}
 
+article details > * {
+    padding: 0rem 1rem;
+}
+
+article details summary {
+    font-style: italic;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #ccc;
+}
+
+article > p {
+    margin: 0;
+}
 
 /* subsequent paragraphs */
 article > p + p {
-    margin-top: 1.5rem;
-}
-
-article > p + ol, article > p + ul {
-    margin: 1.5rem;
+    margin-top: 2rem;
 }
 
 article footer {

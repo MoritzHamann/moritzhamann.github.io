@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Moritz Hamann]]></title><description><![CDATA[Personal blog]]></description><link>http://moritzhamann.com</link><generator>RSS for Node</generator><lastBuildDate>Sun, 15 Sep 2024 15:42:14 GMT</lastBuildDate><atom:link href="http://moritzhamann.com/feed.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[New site - new ambitions]]></title><description><![CDATA[<p>Over the course of the last few weekends I finally took the time to revive this blog.
+In the process I've scraped the old <a href="https://gohugo.io">Hugo</a> based site and redone it entirely in
+<a href="https://metalsmith.io">metalsmith</a>.</p>
+<p>This post tries to shed some background on the reasons (spoiler: personal preferences), how metalsmith
+is set up for this page and what I'm planning to publish going forward.</p>
+<h2 id="a-bit-of-history">A bit of history</h2>
+<p>When I first registered this domain, it was mostly to reserve it for the future. I was too lazy to
+actually set up anything spectacular (even though I was working as a web developer during this time).
+The domain was pointed towards an <a href="https://about.me">about.me</a> page, which was the simplest solution at the time.
+It allowed me to say a few words about myself, and host a CV in the form of a PDF.</p>
+<p>However, gradually I've become more interested in actually hosting a technical blog and started to look into possible options.
+At work I was building mostly sites using WordPress which could have worked well at the time, but would required
+a whole hosting solution (including support for PHP). I was aware of Github pages at the time, and given that there was no
+need to update the Blog by non-technical people, I've decided to go down the route of a static site generator.</p>
+<h2 id="go-hugo-go">Go Hugo go!</h2>
+<p>Enter <a href="https://gohugo.io">Hugo</a>. While I hadn't written anything serious in Go at that time (and haven't since),
+it was the (new?) cool kid on the block and how could I <strong>not</strong> give it try? Looking back, it was a bad fit from the beginning.
+It's main selling point - The world’s fastest framework for building websites - is great if you're having a site big
+enough to run into this problem (I definitely didn't).</p>
+<blockquote>
+<p>Hugo <br>
+The world’s fastest framework for building websites</p>
+<p><cite><a href="https://gohugo.io">gohugo.io</a></cite></p>
+</blockquote>
+<p>There are many <a href="https://themes.gohugo.io">existing themes</a> for Hugo, but being a web developer at that time,
+I obviously wanted to write my own. My unfamiliarity of <a href="https://pkg.go.dev/text/template">Go templates</a>,
+as well as Hugo's complex <a href="https://gohugo.io/templates/lookup-order/">template hierarchy</a> made this a frustrating experience.
+Don't get me wrong, I still think Hugo is a great tool if you're running a static site at scale (and maybe if you're
+a Go developer).</p>
+<p>I made it work in the end and was able to publish a static page to Github. But I was never fully happy with the result.
+If memory serves right, it was shortly after that I found a new job, moved to a different country and never found the time
+nor motivation to continue working or publishing to the blog.</p>
+<h2 id="static-site-generation-as-a-library">Static site generation as a library</h2>
+<p>Fast forward a few years. When 2020 Covid pandemic started, I suddenly had more time on my hand.
+Stuck at home, I've started to rekindle with the idea of having a blog. At the same time I've learned about
+the <a href="https://jaspervdj.be/hakyll/">Hakyll</a> project. While the name is a homage to the famous <a href="https://jekyllrb.com">Jekyll</a>
+generator, it utilizes a completely different approach to static site generation.</p>
+<p>Most static site generators (SSG) have a predefined set of features which are controlled via a configuration file.
+Hakyll on the contrary is a library of different functions and modules, which let you write your own static site generator.
+This sounds complicated at first, but in most cases is rather simple (check out some of their
+<a href="https://jaspervdj.be/hakyll/tutorials/03-rules-routes-compilers.html">examples</a>).
+The main benefit of this approach is that it allows you to easily customize your build process and
+add features to your site, which are not yet present in other, pre-defined SSGs.</p>
+<p>While I liked the idea of constructing the build of my site as a composition of different library components,
+Hakyll is written in Haskell, which I'm not too familiar with.
+My attempts to build <a href="https://github.com/MoritzHamann/fss">something similar</a> in <code>F#</code> did unfortunately not turn out to
+be successful (yet :)). Once the lockdown was lifted, I moved into a new role at work and - yet again -
+forgot about the idea of reviving my blog.</p>
+<h2 id="starting-from-scratch-using-metalsmith">Starting from scratch using metalsmith</h2>
+<p>Over the last few weekends, I sat down and started from scratch. In order to customize the build process, I've used the minimal, but extendable <a href="https://metalsmith.io">Metalsmith</a>
+library. It has a similar approach to Hakyll but is written in JavaScript, which I'm more familiar with, given my day-to-day work.
+While there were a few hick ups here and there - which I'll write in the future in more detail about - it was mostly smooth sailing.
+The biggest issue at the moment is a somewhat broken live reload in the browser, which works <em>most</em> of the time.</p>
+]]></description><link>http://moritz.hamann.com/blog/2023-06-new-site.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2023-06-new-site.html</guid><pubDate>Wed, 28 Jun 2023 00:00:00 GMT</pubDate></item><item><title><![CDATA[Handling datetime entries with native HTML forms]]></title><description><![CDATA[<p>Recently I needed to handle datetime objects in a small web application. In the past I've reached out for some
+JavaScript polyfill library to have a visual input widget for the user. But trying to keep the dependencies small this
+time, I've checked what new input types HTML 5 has to offer and how well they are supported out of the box.</p>
+<p>While the current support is surprisingly good, you may still want to fall back to a JavaScript alternative, especially
+when support on iOS mobile is required. Following is a summary of the experience (in 2024) for different HTML input
+types related to date and time.</p>
+<h2 id="first-candidate-datetime-local">First candidate: "datetime-local"</h2>
+<p>The most obvious first choice would be <code>&lt;input type="datetime-local"&gt;</code> which promises to handle date and time in a
+single input field. Both <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local">MDN</a> and the
+actual <a href="https://html.spec.whatwg.org/multipage/input.html#local-date-and-time-state-(type=datetime-local)">W3C
+specification</a> give a
+very detailed description of the input field, including its supported attributes. For the sake of this article, I'm not
+gonna repeat all of it here.</p>
+<p>To get a first impression how the input field looks and behave, here is an example with default values:</p>
+<figure><label>Example input: </label><input type="datetime-local"></figure>
+
+<p>On all major desktop browsers tested (Safari, Firefox, Chrome on MacOS) the UX of the keyboard input is actually quite
+good, i.e. using <code>&lt;tab&gt;</code> will jump through the input mask as you would expect, and the order of year, month and day
+corresponds to my local setting. All three browser provide a "calender" popup, which varies in quality. Firefox and
+Safari only allow to set the date, while Chrome provides input for time as well. Chrome and Firefox provide a
+"hierarchical" date selection, i.e. the user can step out of the current month to select the year and month directly,
+which can be very useful when selecting dates which are years in the past (Safari requires the user to step back one
+month at a time).</p>
+<p>Interestingly on mobile, the keyboard input is <em>skipped completely</em> and focusing the input field will directly open a
+native widget for date and time.</p>
+<p>So far so good. The "datetime-local" input field seems to handle the use case quite well. However, by default the field
+only allows the user to input or edit time values for hours and minutes (not seconds). Consulting MDN again, the reason
+for this behaviour is the default value of its <code>step</code> attribute. Quoting MDN</p>
+<blockquote>
+<p>[...] The step attribute is a number that specifies the granularity that the value must adhere to, or the special
+value any, which is described below. Only values which are equal to the basis for stepping (min if specified, value
+otherwise, and an appropriate default value if neither of those is provided) are valid. [...]</p>
+<p>[...] For datetime-local inputs, the value of step is given in seconds, with a scaling factor of 1000 (since the
+underlying numeric value is in milliseconds). The default value of step is 60, indicating 60 seconds (or 1 minute, or
+60,000 milliseconds). [...]</p>
+<p><em>- <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local#step">MDN</a></em></p>
+</blockquote>
+<p>As mentioned, the default value for <code>step</code> is "60", i.e. full minute increments. I assume, this is the reason why all
+browsers prevent the entry or modification of seconds by default. On a side note, this behaviour seems to be fully based
+on an interpretation by browser vendors, since the <a href="https://html.spec.whatwg.org/multipage/input.html#local-date-and-time-state-(type=datetime-local)">HTML 5
+specification</a>
+mentions the <code>step</code> attribute only in the context of validation and does <em>not</em> link it to the presentation and UX
+behaviour of the input field.</p>
+<p>Setting <code>step="1"</code> should give us the ability to handle seconds as well. How well is this working in practice?</p>
+<figure><label>Example input with <code>step="1"</code>: </label><input type="datetime-local" step="1"></figure>
+
+<p>All <em>desktop</em> browser tested support the <code>step</code> attribute, and setting <code>step</code> to anything other than a multiply of 60
+will allow the user to enter <em>arbitrary</em> values for seconds independent of the chosen step value. If a <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#suffering-from-a-step-mismatch">step
+mismatch</a>
+occurs,  the input field is marked as invalid (including the <code>:invalid</code> pseudo CSS class) and form submission is
+prevented. There is no dedicated UI widget which limits the entry to only valid step values (e.g. selecting only hours
+in case <code>step="3600"</code>). </p>
+<p>However it looks like the support for <em>mobile</em> browsers, is servery lacking. I.e. even after setting <code>step="1"</code>, mobile
+browser will provide <strong>no way</strong> to input time values beyond hours and minutes. I've tested this with Chrome, Firefox and
+Edge on Android, as well as Safari and Chrome on iOS. All of those browsers won't let the user enter numbers directly
+but bring up the native datetime entry field, limited to hours and minutes. What makes this even worse (in my opinion)
+is the fact that the <code>step</code> attribute is still honoured during form validation. On top of that, modifying a
+pre-populated input field will <strong>zero out</strong> the seconds, with no way to reenter those values again.</p>
+<p><strong>So in summary:</strong> using <code>&lt;input type="datetime-local"&gt;</code> works fine as long as</p>
+<ul>
+<li>the application only cares about hours and minutes</li>
+<li>or if seconds are required, mobile support is not needed</li>
+</ul>
+<details>
+<summary>More examples for different step values (including validation and serialization behaviour)</summary>
+
+<form>
+<dl>
+    <dt>Default:</dt>
+    <dd>
+        <input type="datetime-local" id="default" name="default"><br>
+        Serialization: <span id="outputDefault"></span>
+    </dd>
+    <dt><code>step="1"</code>:</dt>
+    <dd>
+        <input type="datetime-local" id="step1" name="step1" step="1"><br>
+        Serialization: <span id="outputStep1"></span>
+    </dd>
+    <dt><code>step="3600"</code>:</dt>
+    <dd>
+        <input type="datetime-local" id="step3600" name="step3600" step="3600"><br>
+        Serialization: <span id="outputStep3600"></span>
+    </dd>
+    <dt><code>step="25"</code>:</dt>
+    <dd>
+        <input type="datetime-local" id="step25" name="step25" step="25"><br>
+        Serialization: <span id="outputStep25"></span>
+    </dd>
+    <dt><code>step="15" value="2024-02-02T14:27:20"</code> (step mismatch):</dt>
+    <dd>
+        <input type="datetime-local" id="prefilled" name="prefilled" step="15" value="2024-02-02T14:27:20"><br>
+        Serialization: <span id="outputPrefilled"></span>
+    </dd>
+</dl>
+<button type="submit">Validate</button>
+</form>
+<script>
+    function el(idVal) {
+        return document.getElementById(idVal);
+    }
+    function setup(input, out) {
+        input.addEventListener("change", (ev) => out.textContent = input.value);
+        out.textContent = input.value;
+    }
+    setup(el("default"), el("outputDefault"));
+    setup(el("step1"), el("outputStep1"));
+    setup(el("step3600"), el("outputStep3600"));
+    setup(el("step25"), el("outputStep25"));
+    setup(el("prefilled"), el("outputPrefilled"));
+</script>
+</details>
+
+
+<h2 id="second-option-typedate-and-typetime">Second option: type="date" and type="time"</h2>
+<p>In addition to <code>datetime-local</code>, the HTML spec provides the <code>date</code> and <code>time</code> input types (in addition to <code>month</code> and
+<code>week</code>). Let's see if those inputs have better support on mobile browsers. If so, both could be combined to handle
+datetimes. The downside is obviously a slightly different UX, since two different input fields need to be set (with
+different popups) rather than one. Although depending on the scenario, this could also be seen as beneficial.</p>
+<p>Similar to "datetime-local", both input types support the <code>step</code> attribute. In case of of "time", it reflects number of
+seconds, for "date" it's the number of days. Setting the value to "1" gives us</p>
+<figure>
+<label>Date: </label><input type="date" step="1">
+<label>Time: </label><input type="time" step="1">
+</figure>
+
+<p>Surprisingly, using <code>&lt;input type="time" step="1"&gt;</code> on Android with Edge, Chrome and Firefox gives us a popup which
+supports the entry of seconds! It's interesting to see that the same input dialog was not used for "datetime-local". I
+haven't done any mobile development, so I don't know if this is a fundamental limitations of the underlying OS dialog.
+However, when used under iOS (Safari and Chrome) the popup is still limited to hours and minutes.</p>
+<p><strong>In summary:</strong> Splitting the entry of a datetime into its date and time parts and using the corresponding input types,
+works great except for the limitation that iOS still does not support a time resolution of seconds.</p>
+<h2 id="other-things-to-keep-in-mind">Other things to keep in mind</h2>
+<p>There are two other things I've stumbled upon when handling the form values of <code>datetime-local</code> and
+<code>time</code> on the backend.</p>
+<ol>
+<li>The serialization format of both fields can depend on their current value. While the base format is
+<code>YYYY-mm-ddTHH:MM:SS</code> (or <code>HH:MM:SS</code> for "time"), the specification states that the seconds <em>can</em> be dropped in case
+seconds are zero. For all browser I've tested this is true, so 24th of Dec. 2024, 10:24:<strong>00</strong> will serialize to
+<code>2024-12-24T10:24</code>. Hence, the backend validation and parsing logic will need to be able to handle the different
+formats.</li>
+<li>By design none of the entry field will provide timezone information, not even the current offset of the local
+environment. <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local#setting_timezones">MDN
+suggests</a> to either
+have a dropdown field with all possible offsets (which is just a horrible UX, given that the correct one can not be
+preselected) or - if the current user is logged in and has a default timezone set in the account - use a hidden input
+field with the offset.</li>
+</ol>
+<p>Not the end of the world, but definitely a small annoyance which broke my form handling at the beginning.</p>
+<h2 id="why-it-matters">Why it matters</h2>
+<p>I'm personally happy to see the support of date and time values in HTML forms improving. It provides a better unified UX
+experience throughout the web, is great for quick prototyping as well as internal tools and can reduce the download and
+execution overhead of web applications. Obviously, third party solution still have their place, especially if data entry
+is one of the key parts of the application.</p>
+<p>There is however an argument to be made about the ever growing complexity of the web standard, which makes implementing
+new browser engines more and more difficult. But I guess this is a discussion for another time.</p>
+]]></description><link>http://moritz.hamann.com/blog/2024-09-exploring-html-inputs-datime-local.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2024-09-exploring-html-inputs-datime-local.html</guid><pubDate>Sun, 15 Sep 2024 00:00:00 GMT</pubDate></item></channel></rss>

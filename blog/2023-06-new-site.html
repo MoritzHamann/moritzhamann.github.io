@@ -7,7 +7,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href="/public/prism.css" rel="stylesheet" />
         <script src="/public/prism.js"></script>
-        <link href="/public/site.css" rel="stylesheet" /></head>
+        <link href="/public/site.css" rel="stylesheet" />
+        <link href="/feed.xml" rel="alternate" type="application/rss+xml" /> 
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+</head>
 
 <body class="line-numbers">
     <nav>
@@ -17,9 +23,11 @@
     <main>
         <header>
             <h1>New site - new ambitions</h1>
-            <p class="metadata">
-                <b>Published:</b> <time datetime="">2023-06-28</time>
-            </p>
+            <dl class="metadata">
+                <dt>Published:</dt> <dd><time datetime="2023-06-28T00:00:00Z">2023-06-28</time></dd>
+                <dt>TOC:</dt>
+                <dd><ol class="toc"><li class="toc-item"><a class="toc-link" href="#a-bit-of-history">A bit of history</a></li><li class="toc-item"><a class="toc-link" href="#go-hugo-go">Go Hugo go!</a></li><li class="toc-item"><a class="toc-link" href="#static-site-generation-as-a-library">Static site generation as a library</a></li><li class="toc-item"><a class="toc-link" href="#starting-from-scratch-using-metalsmith">Starting from scratch using metalsmith</a></li></ol></dd>
+            </dl>
         </header>
         <article>
             <p>Over the course of the last few weekends I finally took the time to revive this blog.
@@ -77,7 +85,7 @@ While there were a few hick ups here and there - which I'll write in the future 
 The biggest issue at the moment is a somewhat broken live reload in the browser, which works <em>most</em> of the time.</p>
 
             <footer>
-                    <a href="/">Back to blog</a>
+                   <a href="/blog/2024-09-exploring-html-inputs-datime-local.html">< Handling datetime entries with native HTML forms</a>
                 ||
                     <a href="/">Back to blog</a>
             </footer>
