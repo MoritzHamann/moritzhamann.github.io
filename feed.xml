@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Moritz Hamann]]></title><description><![CDATA[Personal blog]]></description><link>http://moritzhamann.com</link><generator>RSS for Node</generator><lastBuildDate>Tue, 17 Sep 2024 13:57:27 GMT</lastBuildDate><atom:link href="http://moritzhamann.com/feed.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[New site - new ambitions]]></title><description><![CDATA[<p>Over the course of the last few weekends I finally took the time to revive this blog.
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Moritz Hamann]]></title><description><![CDATA[Personal blog]]></description><link>http://moritzhamann.com</link><generator>RSS for Node</generator><lastBuildDate>Tue, 08 Oct 2024 10:13:38 GMT</lastBuildDate><atom:link href="http://moritzhamann.com/feed.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[New site - new ambitions]]></title><description><![CDATA[<p>Over the course of the last few weekends I finally took the time to revive this blog.
 In the process I've scraped the old <a href="https://gohugo.io">Hugo</a> based site and redone it entirely in
 <a href="https://metalsmith.io">metalsmith</a>.</p>
 <p>This post tries to shed some background on the reasons (spoiler: personal preferences), how metalsmith
@@ -206,4 +206,43 @@ execution overhead of web applications. Obviously, third party solution still ha
 is one of the key parts of the application.</p>
 <p>There is however an argument to be made about the ever growing complexity of the web standard, which makes implementing
 new browser engines more and more difficult. But I guess this is a discussion for another time.</p>
-]]></description><link>http://moritz.hamann.com/blog/2024-09-15-handling-datetime-entries-native-html.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2024-09-15-handling-datetime-entries-native-html.html</guid><pubDate>Sun, 15 Sep 2024 00:00:00 GMT</pubDate></item></channel></rss>
+]]></description><link>http://moritz.hamann.com/blog/2024-09-15-handling-datetime-entries-native-html.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2024-09-15-handling-datetime-entries-native-html.html</guid><pubDate>Sun, 15 Sep 2024 00:00:00 GMT</pubDate></item><item><title><![CDATA[Switching to 5Ghz wifi made the Raspberry Pi fly again]]></title><description><![CDATA[<p>For the last few months my Raspberry Pi 4 was happily running on my desk, tucked away next to the monitor. It's serving
+a small web app in golang on the internal network and tailscale. I've never noticed any latency problems with it, so it
+took me by surprise when I deployed some OCaml experiments on the Pi and observed a lot of HTTP connection timeouts and
+name resolution errors while fetching some URLs concurrently.</p>
+<p>Since I cross compiled the experiment from my M1, I first thought there might by some issues related to the TLS setup in
+Cohttp. So I've copied the source files over ssh and installed all dependencies via opam. Average download speed of
+<em>0.5 Mbit/s</em>. WTF? Some unrelated <code>git clone</code> showed the same speed and just timed out...</p>
+<p>Running <code>uptime</code> showed 120 days, so I blamed it on some obscure wifi stack issue and did what most people would:</p>
+<figure>
+    <iframe src="https://giphy.com/embed/DUtVdGeIU8lmo" width="480" height="264" style="" frameborder="0" class="giphy-embed" allowfullscreen=""></iframe>
+</figure>
+
+<p>It did not disappoint: download speed was back to <em>80 Mbit/s</em> and no connection errors while fetching the URLs. Problem solved.</p>
+<p>Or so I thought. The next day the same thing happened again. How is this possible? While searching the Raspberry pi
+forum two things caught my eye: <a href="https://forums.raspberrypi.com/viewtopic.php?t=320076">USB3 is interfering with 2.4Ghz wifi</a>
+and <a href="https://forums.raspberrypi.com/viewtopic.php?t=305861">extremly slow wifi on pi4</a>. Both reported slow wifi speeds
+on 2.4Ghz, which went away after switching to 5Ghz.</p>
+<p>And then it dawned on me. I'm running our network on both frequencies under the same name. The day before, when I
+rebooted the Pi the wifi did not connect automatically, so I temporarily plugged the Pi into my monitor and selected the
+wifi via the GUI. Which showed 5GHz in the tooltip. Could this have changed? Using <code>nmcli</code> the current network was
+indeed listed as 2.4Ghz.</p>
+<pre><code>$ nmcli -f IN-USE,SSID,BSSID,FREQ device wifi list
+IN-USE  SSID       BSSID              FREQ
+*       xxxxxxxxx  yy:yy:yy:yy:yy:yy  2412 MHz
+        xxxxxxxxx  zz:zz:zz:zz:zz:zz  5200 MHz
+</code></pre>
+<p>Changing the network via</p>
+<pre><code>$ sudo nmcli device wifi connect zz:zz:zz:zz:zz:zz password &lt;pw&gt;
+</code></pre>
+<p>had the desired effect and the download speed is back to normal. We can make this permanent by adding <code>band=a</code> in the
+<code>[wifi]</code> section of <code>/etc/NetworkManager/system-connections/preconfigured.nmconnection</code> and/or <code>&lt;SSID&gt;.nmconnection</code> in
+the same folder.</p>
+<p>I still not sure what exactly the issue with the 2.4GHz network is, especially given that this didn't seem to have
+happened in the past. Potentially some interference due to the ceiling between the Pi and the router, the fancy metal
+enclosure I got or a smaller wifi antenna in the Pi. But it doesn't really matter, since it's been working fine for the
+last few days, and once the brand new network cable arrives, the Pi will be plugged directly into the router.</p>
+<figure>
+    <iframe src="https://giphy.com/embed/BPJmthQ3YRwD6QqcVD" width="480" height="269" style="" frameborder="0" class="giphy-embed" allowfullscreen=""></iframe>
+</figure>
+]]></description><link>http://moritz.hamann.com/blog/2024-10-08-raspberrypi-wifi-freq.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2024-10-08-raspberrypi-wifi-freq.html</guid><pubDate>Tue, 08 Oct 2024 00:00:00 GMT</pubDate></item></channel></rss>

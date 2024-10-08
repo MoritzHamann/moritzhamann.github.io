@@ -1,0 +1,80 @@
+<html lang="en">
+
+<head>
+        <meta charset="utf-8" />
+        <title>Switching to 5Ghz wifi made the Raspberry Pi fly again</title>
+        <meta name="description" content="Preventing lackluster wifi speeds on a Raspberry Pi 4" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/public/prism.css" rel="stylesheet" />
+        <script src="/public/prism.js"></script>
+        <link href="/public/site.css" rel="stylesheet" />
+        <link href="/feed.xml" rel="alternate" type="application/rss+xml" /> 
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+        <script data-goatcounter="https://moritzhamann.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+
+<body class="line-numbers">
+    <nav>
+        <span class="name">Moritz (Moe) Hamann</span> <a href="/">Blog</a> | <a href="/aboutme.html">About me</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Switching to 5Ghz wifi made the Raspberry Pi fly again</h1>
+            <dl class="metadata">
+                <dt>Published:</dt> <dd><time datetime="2024-10-08T00:00:00Z">2024-10-08</time></dd>
+            </dl>
+        </header>
+        <article>
+            <p>For the last few months my Raspberry Pi 4 was happily running on my desk, tucked away next to the monitor. It's serving
+a small web app in golang on the internal network and tailscale. I've never noticed any latency problems with it, so it
+took me by surprise when I deployed some OCaml experiments on the Pi and observed a lot of HTTP connection timeouts and
+name resolution errors while fetching some URLs concurrently.</p>
+<p>Since I cross compiled the experiment from my M1, I first thought there might by some issues related to the TLS setup in
+Cohttp. So I've copied the source files over ssh and installed all dependencies via opam. Average download speed of
+<em>0.5 Mbit/s</em>. WTF? Some unrelated <code>git clone</code> showed the same speed and just timed out...</p>
+<p>Running <code>uptime</code> showed 120 days, so I blamed it on some obscure wifi stack issue and did what most people would:</p>
+<figure>
+    <iframe src="https://giphy.com/embed/DUtVdGeIU8lmo" width="480" height="264" style="" frameborder="0" class="giphy-embed" allowfullscreen=""></iframe>
+</figure>
+
+<p>It did not disappoint: download speed was back to <em>80 Mbit/s</em> and no connection errors while fetching the URLs. Problem solved.</p>
+<p>Or so I thought. The next day the same thing happened again. How is this possible? While searching the Raspberry pi
+forum two things caught my eye: <a href="https://forums.raspberrypi.com/viewtopic.php?t=320076">USB3 is interfering with 2.4Ghz wifi</a>
+and <a href="https://forums.raspberrypi.com/viewtopic.php?t=305861">extremly slow wifi on pi4</a>. Both reported slow wifi speeds
+on 2.4Ghz, which went away after switching to 5Ghz.</p>
+<p>And then it dawned on me. I'm running our network on both frequencies under the same name. The day before, when I
+rebooted the Pi the wifi did not connect automatically, so I temporarily plugged the Pi into my monitor and selected the
+wifi via the GUI. Which showed 5GHz in the tooltip. Could this have changed? Using <code>nmcli</code> the current network was
+indeed listed as 2.4Ghz.</p>
+<pre><code>$ nmcli -f IN-USE,SSID,BSSID,FREQ device wifi list
+IN-USE  SSID       BSSID              FREQ
+*       xxxxxxxxx  yy:yy:yy:yy:yy:yy  2412 MHz
+        xxxxxxxxx  zz:zz:zz:zz:zz:zz  5200 MHz
+</code></pre>
+<p>Changing the network via</p>
+<pre><code>$ sudo nmcli device wifi connect zz:zz:zz:zz:zz:zz password &lt;pw&gt;
+</code></pre>
+<p>had the desired effect and the download speed is back to normal. We can make this permanent by adding <code>band=a</code> in the
+<code>[wifi]</code> section of <code>/etc/NetworkManager/system-connections/preconfigured.nmconnection</code> and/or <code>&lt;SSID&gt;.nmconnection</code> in
+the same folder.</p>
+<p>I still not sure what exactly the issue with the 2.4GHz network is, especially given that this didn't seem to have
+happened in the past. Potentially some interference due to the ceiling between the Pi and the router, the fancy metal
+enclosure I got or a smaller wifi antenna in the Pi. But it doesn't really matter, since it's been working fine for the
+last few days, and once the brand new network cable arrives, the Pi will be plugged directly into the router.</p>
+<figure>
+    <iframe src="https://giphy.com/embed/BPJmthQ3YRwD6QqcVD" width="480" height="269" style="" frameborder="0" class="giphy-embed" allowfullscreen=""></iframe>
+</figure>
+
+            <footer>
+                    <a href="/">Back to blog</a>
+                   <a href="/blog/2024-09-15-handling-datetime-entries-native-html.html">Handling datetime entries with native HTML inputs ></a>
+            </footer>
+        </article>
+    </main>
+</body>
+
+</html>

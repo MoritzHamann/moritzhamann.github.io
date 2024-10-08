@@ -194,6 +194,10 @@ article figure {
     text-align: center;
 }
 
+article figure * {
+    max-width: 100%;
+}
+
 article img {
     max-width: 100%;
     box-shadow: 5px 5px #ccc;
