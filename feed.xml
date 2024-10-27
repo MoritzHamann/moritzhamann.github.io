@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Moritz Hamann]]></title><description><![CDATA[Personal blog]]></description><link>http://moritzhamann.com</link><generator>RSS for Node</generator><lastBuildDate>Tue, 08 Oct 2024 10:13:38 GMT</lastBuildDate><atom:link href="http://moritzhamann.com/feed.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[New site - new ambitions]]></title><description><![CDATA[<p>Over the course of the last few weekends I finally took the time to revive this blog.
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Moritz Hamann]]></title><description><![CDATA[Personal blog]]></description><link>http://moritzhamann.com</link><generator>RSS for Node</generator><lastBuildDate>Sun, 27 Oct 2024 14:54:47 GMT</lastBuildDate><atom:link href="http://moritzhamann.com/feed.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[New site - new ambitions]]></title><description><![CDATA[<p>Over the course of the last few weekends I finally took the time to revive this blog.
 In the process I've scraped the old <a href="https://gohugo.io">Hugo</a> based site and redone it entirely in
 <a href="https://metalsmith.io">metalsmith</a>.</p>
 <p>This post tries to shed some background on the reasons (spoiler: personal preferences), how metalsmith
@@ -245,4 +245,157 @@ last few days, and once the brand new network cable arrives, the Pi will be plug
 <figure>
     <iframe src="https://giphy.com/embed/BPJmthQ3YRwD6QqcVD" width="480" height="269" style="" frameborder="0" class="giphy-embed" allowfullscreen=""></iframe>
 </figure>
-]]></description><link>http://moritz.hamann.com/blog/2024-10-08-raspberrypi-wifi-freq.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2024-10-08-raspberrypi-wifi-freq.html</guid><pubDate>Tue, 08 Oct 2024 00:00:00 GMT</pubDate></item></channel></rss>
+]]></description><link>http://moritz.hamann.com/blog/2024-10-08-raspberrypi-wifi-freq.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2024-10-08-raspberrypi-wifi-freq.html</guid><pubDate>Tue, 08 Oct 2024 00:00:00 GMT</pubDate></item><item><title><![CDATA[Neovim: Logging utilities]]></title><description><![CDATA[<p>When writing a Neovim configuration or plugin, it sometimes can become annoying when trying to debug an issue. The
+available debug utilities are either <code>print()</code> or <code>vim.notify()</code>. In both cases (by default <code>vim.notify()</code> is the same
+as <code>print()</code>), the log messes are written to <code>:messages</code>, which does not allow to further select or process the printed
+text (as far as I'm aware).</p>
+<h2 id="setup">Setup</h2>
+<p>However, thanks to the flexibility of Neovim we can write our own logging function, which writes the output to a
+temporary logging buffer. A rough outline of such a function could be</p>
+<pre><code class="language-lua">--- @class LogOptions
+--- @field namespace string namespace the log belongs to
+
+
+local M = {}
+
+--- @param msg string|table&lt;string&gt; log message (either single line or array
+---                                 of lines to accept vim.inspect() output)
+--- @param level integer|nil log level defined in vim.log.levels
+--- @param options LogOptions allows us to set different logging namespaces
+M.log = function(msg, level, options)
+
+    -- extracting a namespace to determine which buffer to log to
+    local opts = options or {}
+    local ns = opts.namespace or "default"
+
+    -- find the corresponding buffer and if there is no such buffer, create one
+    local buffer_name = M.buffer_name(ns)
+    local buffer = M.find_log_buffer(buffer_name)
+    if buffer == nil then
+        buffer = vim.api.nvim_create_buf(true, true)
+        vim.api.nvim_buf_set_name(buffer, buffer_name)
+    end
+
+    -- transform the integer log level to its string representation.
+    local level_str = "INFO"
+    for l, i in pairs(vim.log.levels) do
+        if level == i  then
+            level_str = l
+        end
+    end
+
+
+    -- ensure `msg` is always a table to make processing simpler
+    if type(msg) == "string" then
+        msg = {msg}
+    end
+
+    -- Split `msg` on newlines, since nvim_buf_set_lines() does not like them
+    msg = vim.tbl_map(function(line)
+        return vim.split(line, "\n")
+    end, msg)
+    msg = vim.iter(msg):flatten(1):totable()
+
+    -- for each line add the log level
+    local complete_msg = vim.tbl_map(function (line)
+        return "[" .. level_str .. "] " .. line
+    end, msg)
+
+    -- actually add the lines to the buffer
+    vim.api.nvim_buf_set_lines(buffer, -1, -1, true, complete_msg)
+end
+
+
+--- @param namespace string
+M.buffer_name = function (namespace)
+    return "LOG-" .. namespace
+end
+
+
+--- @param buffer_name string
+M.find_log_buffer = function(buffer_name)
+    local buffer_list = vim.api.nvim_list_bufs()
+    for _, buf_num in ipairs(buffer_list) do
+        local name = vim.fn.bufname(buf_num)
+        if name == buffer_name then
+            return buf_num
+        end
+    end
+    return nil
+end
+
+
+--- @param namespace string
+M.create_logger = function(namespace)
+    local opts = {namespace = namespace}
+    local logging_func_for = function(level)
+        return function(msg)
+            M.log(msg, level, opts)
+        end
+    end
+
+    return {
+        trace = logging_func_for(vim.log.levels.TRACE),
+        debug = logging_func_for(vim.log.levels.DEBUG),
+        info = logging_func_for(vim.log.levels.INFO),
+        warn = logging_func_for(vim.log.levels.WARN),
+        error = logging_func_for(vim.log.levels.ERROR),
+    }
+end
+</code></pre>
+<p>This can directly be tested via</p>
+<pre><code>:lua require("myFileName").log("Some log message", vim.log.levels.INFO, {namespace="myNameSpace"})
+</code></pre>
+<p>which should create a new buffer called <code>LOG-myNameSpace</code> with the content <code>[INFO] Some log message</code>.</p>
+<p>The above is just a rough idea, and could be customized further. I.e. rather than having different buffers per
+namespace, it could log to a single one and prefix the messages with the namespace. Or use <code>print()</code> if a namespace is
+not set. You get the idea.</p>
+<h2 id="how-to-use">How to use</h2>
+<p>There are two ways on how to use this:</p>
+<ol>
+<li>use the log function directly in our plugin</li>
+<li>or replace the existing <code>vim.notify()</code> function with our logging function.</li>
+</ol>
+<p>The first option is straight forward and ensures that no other plugin will use the custom logging function:</p>
+<pre><code class="language-lua">    -- create a namespaced logger
+    local log = require("myFileName").create_logger("myNameSpace")
+
+    -- use it
+    log.info("Hello World")
+    log.error("That's not right")
+    log.debug(vim.inspect(vim.lsp.buf))
+
+    -- content of the corresponding LOG-myNameSpace buffer
+    -- [INFO] Hello World
+    -- [ERROR] That's not right
+    -- [DEBUG] {
+    -- [DEBUG]   add_workspace_folder = &lt;function 1&gt;,
+    -- [DEBUG]   clear_references = &lt;function 2&gt;,
+    -- [DEBUG]   code_action = &lt;function 3&gt;,
+    -- [DEBUG]   completion = &lt;function 4&gt;,
+    -- [DEBUG]   declaration = &lt;function 5&gt;,
+    -- [DEBUG]   definition = &lt;function 6&gt;,
+    -- [DEBUG]   document_highlight = &lt;function 7&gt;,
+    -- [DEBUG]   document_symbol = &lt;function 8&gt;,
+    -- [DEBUG]   execute_command = &lt;function 9&gt;,
+    -- [DEBUG]   format = &lt;function 10&gt;,
+    -- [DEBUG]   hover = &lt;function 11&gt;,
+    -- [DEBUG]   implementation = &lt;function 12&gt;,
+    -- [DEBUG]   incoming_calls = &lt;function 13&gt;,
+    -- [DEBUG]   list_workspace_folders = &lt;function 14&gt;,
+    -- [DEBUG]   outgoing_calls = &lt;function 15&gt;,
+    -- [DEBUG]   references = &lt;function 16&gt;,
+    -- [DEBUG]   remove_workspace_folder = &lt;function 17&gt;,
+    -- [DEBUG]   rename = &lt;function 18&gt;,
+    -- [DEBUG]   signature_help = &lt;function 19&gt;,
+    -- [DEBUG]   type_definition = &lt;function 20&gt;,
+    -- [DEBUG]   typehierarchy = &lt;function 21&gt;,
+    -- [DEBUG]   workspace_symbol = &lt;function 22&gt;
+    -- [DEBUG] }
+</code></pre>
+<p>The second option can be done by assigning the log function</p>
+<pre><code>vim.notify = require("myFileName").log
+</code></pre>
+<p>somewhere during the initialization of your lua dotfiles. It has the interesting side effect that other plugins using
+<code>vim.notify()</code> now also log into the temporary buffer.</p>
+]]></description><link>http://moritz.hamann.com/blog/2024-10-27-logging-in-neovim.html</link><guid isPermaLink="true">http://moritz.hamann.com/blog/2024-10-27-logging-in-neovim.html</guid><pubDate>Sun, 27 Oct 2024 00:00:00 GMT</pubDate></item></channel></rss>
