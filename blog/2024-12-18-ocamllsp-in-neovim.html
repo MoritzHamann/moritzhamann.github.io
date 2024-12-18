@@ -1,0 +1,131 @@
+<html lang="en">
+
+<head>
+        <meta charset="utf-8" />
+        <title>Neovim: Tips and tricks for OCaml&#x27;s LSP server</title>
+        <meta name="description" content="How to ensure ocamllsp uses up to date build information" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/public/prism.css" rel="stylesheet" />
+        <script src="/public/prism.js"></script>
+        <link href="/public/site.css" rel="stylesheet" />
+        <link href="/feed.xml" rel="alternate" type="application/rss+xml" /> 
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+        <script data-goatcounter="https://moritzhamann.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+
+<body class="line-numbers">
+    <nav>
+        <img class="round" src="/public/avatar.jpg" />
+        <div>
+            <div class="name">Moritz (Moe) Hamann</div>
+            <div class="site-navigation">
+                <a href="/">Blog</a> | <a href="/aboutme.html">About me</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Neovim: Tips and tricks for OCaml&#x27;s LSP server</h1>
+            <dl class="metadata">
+                <dt>Published:</dt> <dd><time datetime="2024-12-18T00:00:00Z">2024-12-18</time></dd>
+                    <dt>TOC:</dt>
+                    <dd><ol class="toc"><li class="toc-item"><a class="toc-link" href="#first-things-first-setting-everything-up">First things first: Setting everything up</a></li><li class="toc-item"><a class="toc-link" href="#dune-rpc-keeping-lsp-information-up-to-date">Dune RPC: keeping LSP information up to date</a></li><li class="toc-item"><a class="toc-link" href="#running-ocamllsp-in-a-separate-build-directory">Running ocamllsp in a separate build directory</a></li><li class="toc-item"><a class="toc-link" href="#help-my-files-are-not-formatting">Help! My files are not formatting</a></li></ol></dd>
+            </dl>
+        </header>
+        <article>
+            <p>When developing OCaml projects in Neovim, the OCaml language server (<a href="https://github.com/ocaml/ocaml-lsp">ocamllsp</a>) can
+be of great help. It should just work out of the box, however there are few tweaks you can do in order to
+improve your developer experience even more.</p>
+<h2 id="first-things-first-setting-everything-up">First things first: Setting everything up</h2>
+<p>I'm assuming you have a working OCaml and opam environment. If not, follow the steps on the official <a href="https://ocaml.org/install">"Getting
+Started"</a> page first.</p>
+<p>After that, let's make sure all the necessary packages are installed:</p>
+<pre><code>$ opam install ocaml-lsp-server ocamlformat dune
+</code></pre>
+<p>This will install the following packages globally</p>
+<ul>
+<li><code>ocaml-lsp-server</code>: the language server itself (the executable is called <code>ocamllsp</code>)</li>
+<li><code>ocamlformat</code>: the file formatting tool which ocamllsp uses</li>
+<li><code>dune</code>: the newest OCaml build system.</li>
+</ul>
+<p>In order to simplify the server configuration, we're using <a href="https://github.com/neovim/nvim-lspconfig">nvim-lspconfig</a>.
+Make sure to follow your package manager's instructions on how to add lspconfig to your Neovim installation. Once this is
+done, add a basic configuration for <code>ocamllsp</code> somewhere in your Lua config files:</p>
+<pre><code class="language-lua">local lsp_config = require('lspconfig')
+lsp_config['ocamllsp'].setup({})
+</code></pre>
+<p>Once you've reloaded your configuration, you should have a working LSP integration while editing OCaml source files.</p>
+<details>
+<summary>Bonus: LSP keybindings</summary>
+
+<p>Last but not least, if you have not configured your LSP keybindings so far, feel free to use those as your inspiration:</p>
+<pre><code class="language-lua">vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+    callback = function(event)
+        local opts = { buffer = event.buf }
+        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+        vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+        vim.keymap.set('n', '&lt;C-k&gt;', vim.lsp.buf.signature_help, opts)
+        vim.keymap.set('n', '&lt;leader&gt;wa', vim.lsp.buf.add_workspace_folder, opts)
+        vim.keymap.set('n', '&lt;leader&gt;wr', vim.lsp.buf.remove_workspace_folder, opts)
+        vim.keymap.set('n', '&lt;leader&gt;wl', function()
+            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        end, opts)
+        vim.keymap.set('n', '&lt;leader&gt;H', vim.lsp.buf.typehierarchy, opts)
+        vim.keymap.set('n', '&lt;leader&gt;rn', vim.lsp.buf.rename, opts)
+        vim.keymap.set({ 'n', 'v' }, '&lt;leader&gt;ca', vim.lsp.buf.code_action, opts)
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+        vim.keymap.set('n', '&lt;leader&gt;fo', function()
+            vim.lsp.buf.format { async = true }
+        end, opts)
+    end,
+})
+</code></pre>
+</details>
+
+<h2 id="dune-rpc-keeping-lsp-information-up-to-date">Dune RPC: keeping LSP information up to date</h2>
+<p>Once you started using the LSP server, you may notice that from time to time diagnostic information are not up to
+date. This often happens when new files or modules are added the project. One way to solve those issues is to build the
+project with <code>dune build</code> followed by <code>:LspRestart</code> in Neovim. This will ensure that the latest build
+information are available to ocamllsp.</p>
+<p>However, there is a much better way by utilizing the <a href="https://dune.readthedocs.io/en/latest/rpc.html">RPC mechanism</a> of
+dune. Newer versions of <code>dune</code> will start an (experimental) RPC server when a "watch" build is started. ocamllsp can
+utilize this RPC mechanism to get notifications about new build information and update the editor diagnostics
+accordingly.</p>
+<p>There is configuration for ocamllsp needed, since it should recognize the running <code>dune</code> process and automatically
+establish the RPC connection. The only thing to do is to start a continuous build of your project via the <code>-w</code> flag
+before the LSP server is started (e.g. <code>dune build -w</code> or <code>dune exec -w</code>).</p>
+<h2 id="running-ocamllsp-in-a-separate-build-directory">Running ocamllsp in a separate build directory</h2>
+<p>While the continuous dune build gives up-to-date diagnostics of the project, there is one annoying downside - it will
+lock your build directory for other dune processes. I.e. you won't be able to execute <code>dune exec</code> or <code>dune runtest</code>
+while the build process is running. You could obviously stop the build, run your other commands and then restart the
+build, but this gets annoying fast.</p>
+<p>Another way is to use a different build directory for ocamllsp. dune supports this via the <code>--build-dir=&lt;path&gt;</code> option.
+E.g. to start the continuous build in the <code>_build_lsp</code> folder, run</p>
+<pre><code>$ dune build -w --build-dir=_build_lsp
+</code></pre>
+<p>This will ensure that your main <code>_build</code> folder is not locked and can be used for one-off dune commands. The beauty of
+it is that ocamllsp will automatically detect the new build directory with the running dune instance and uses it
+for live diagnostics.</p>
+<h2 id="help-my-files-are-not-formatting">Help! My files are not formatting</h2>
+<p>If the LSP format command is not doing anything, the most likely  reason is a missing <code>.ocamlformat</code> file. Without it,
+the <code>ocamlformat</code> tool will <strong>not</strong> change any files. To solve the issue, simply add a <code>.ocamlformat</code> file at the root
+of your project (even an empty one should do). For more details on the formatting options available via this file, run
+<code>man ocamlformat</code> or check the <a href="https://ocaml.org/p/ocamlformat/0.26.2/doc/index.html">online documentation</a>.</p>
+
+            <footer>
+                    <a href="/">Back to blog</a>
+                   <a href="/blog/2024-10-27-logging-in-neovim.html">Neovim: Logging utilities ></a>
+            </footer>
+        </article>
+    </main>
+</body>
+
+</html>
