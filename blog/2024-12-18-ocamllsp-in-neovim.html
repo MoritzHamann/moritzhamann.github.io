@@ -31,7 +31,7 @@
         <header>
             <h1>Neovim: Tips and tricks for OCaml&#x27;s LSP server</h1>
             <dl class="metadata">
-                <dt>Published:</dt> <dd><time datetime="2024-12-18T00:00:00Z">2024-12-18</time></dd>
+                <b>Published:</b> <time datetime="2024-12-18T00:00:00Z">2024-12-18</time>
                     <dt>TOC:</dt>
                     <dd><ol class="toc"><li class="toc-item"><a class="toc-link" href="#first-things-first-setting-everything-up">First things first: Setting everything up</a></li><li class="toc-item"><a class="toc-link" href="#dune-rpc-keeping-lsp-information-up-to-date">Dune RPC: keeping LSP information up to date</a></li><li class="toc-item"><a class="toc-link" href="#running-dune-in-a-separate-build-directory">Running Dune in a separate build directory</a></li><li class="toc-item"><a class="toc-link" href="#help-my-files-are-not-formatting">Help! My files are not formatting</a></li></ol></dd>
             </dl>
@@ -105,21 +105,29 @@ before the LSP server is started (e.g. <code>dune build -w</code> or <code>dune 
 <h2 id="running-dune-in-a-separate-build-directory">Running Dune in a separate build directory</h2>
 <blockquote>
 <p><strong>Correction:</strong>
-A previous version of this article stated that running a continuous dune build in a different build folder other than
-the default <code>build</code> will work without a problem with ocamllsp. This is not correct. While ocamllsp recognizes the
-active dune instance, the diagnostics will not work.</p>
+A previous version of this article stated that ocamllsp will work out of the box if the continuous dune build is
+running in a different build folder. This is not correct, as it needs additional configuration as stated below.</p>
 <p>See also <a href="https://github.com/ocaml/ocaml-lsp/issues/1433">this GitHub issue</a> for more information.</p>
 </blockquote>
 <p>While the continuous dune build gives up-to-date diagnostics of the project, there is one annoying downside - it will
 lock your build directory for other dune processes. I.e. you won't be able to execute <code>dune exec</code> or <code>dune runtest</code>
 while the build process is running. You could obviously stop the build, run your other commands and then restart the
 build, but this gets annoying fast.</p>
-<p>Another way is to use a different build directory for your one-off <code>dune</code> commands. Dune supports this via the
-<code>--build-dir=&lt;path&gt;</code> option. E.g. to execute <code>main.exe</code> and but using the <code>_build_oneoff</code> folder, run</p>
-<pre><code>$ dune exec --build-dir=_build_oneoff bin/main.exe
+<p>Another way is to use different build directories - one for your continuous <code>dune</code> builds which provide realtime
+diagnostics to ocamllsp - and the default directory to execute tests and programs. Dune supports this via the
+<code>--build-dir=&lt;path&gt;</code> option. E.g. to execute the dune instance for ocamllsp in the <code>_build_lsp</code> folder, run</p>
+<pre><code>$ dune build -w --build-dir=_build_lsp
 </code></pre>
-<p>This will ensure that the Dune instance running builds in your main <code>_build</code> folder is still providing up to date
-diagnostics to <code>ocamllsp</code> via RPC, but you can still execute tests and run your OCaml programs simultaneously.</p>
+<p>In order for ocamllsp to recognize non-standard build directories, the <code>DUNE_BUILD_DIR</code> environment variable needs to be
+set accordingly. In lspconfig, this can be achieved by adding the <code>cmd_env</code> config parameter to the ocamllsp entry</p>
+<pre><code class="language-lua">lsp_config['ocamllsp'].setup({
+    cmd_env = {DUNE_BUILD_DIR = '_build_lsp'},
+    --- ...
+})
+</code></pre>
+<p>This will ensure that one Dune instance is running builds in <code>_build_lsp</code> and provides up to date diagnostics to
+<code>ocamllsp</code> via RPC, while you can still execute tests and run your OCaml programs simultaneously in the default build
+directory.</p>
 <h2 id="help-my-files-are-not-formatting">Help! My files are not formatting</h2>
 <p>If the LSP format command is not doing anything, the most likely  reason is a missing <code>.ocamlformat</code> file. Without it,
 the <code>ocamlformat</code> tool will <strong>not</strong> change any files. To solve the issue, simply add a <code>.ocamlformat</code> file at the root
