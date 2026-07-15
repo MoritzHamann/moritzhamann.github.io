@@ -30,9 +30,7 @@
  ************************************/
 
 html {
-    /* font-family: 'Comic Neue', 'Roboto', 'Verdana', sans-serif; */
-    /* font-size: 18px; */
-    font-family: 'Roboto', 'Verdana', sans-serif;
+    font-family: 'Verdana', sans-serif;
     font-size: 15px;
     line-height: 1.5;
 }
@@ -42,15 +40,17 @@ body {
 }
 
 a {
-    text-decoration: none;
-    color: #819ff2;
-    /* color: #fc8c03; */
+    text-decoration: underline dotted;
+    color: #A70000;
 }
 
-a:visited {
-    color: #819ff2;
-    /* color: #fc8c03; */
+a:hover {
+    text-decoration: underline;
 }
+
+/* a:visited { */
+/*     color: #819ff2; */
+/* } */
 /*************
  * navigation
  *************/
@@ -71,6 +71,7 @@ nav img.round {
     height: 80px;
     border-radius: 40px;
     margin-right: 20px;
+    display: none;
 }
 
 /*******************
@@ -85,56 +86,53 @@ header h1 {
 }
 header .metadata {
     color: #aaa;
-    font-style: italic;
-    font-size: 0.9rem;
+    /* font-style: italic; */
+    /* font-size: 0.9rem; */
     margin-top: 0;
 }
 
-header dl.metadata dt {
-    font-weight: bold;
-}
-
-.toc {
-    padding-left: 0;
-}
-
-.toc .toc {
-    margin-left: 1rem;
-}
-
-.toc .toc-item {
-	list-style: disclosure-closed;
-}
-.toc .toc-link {
-	color: #000000;
-    /* text-decoration: none; */
-}
 
 /******************
  * Blog index
  * ****************/
 
-.blog-index article {
-    margin: 1.5rem 0;
+.blog-index .article-list {
     padding: 0;
 }
 
-.blog-index article h1 {
-    font-size: 1rem;
-    margin: 0;
-    font-weight: normal;
-}
-.blog-index article time {
-    font-size: 0.9rem;
+.blog-index .article-list li.article {
+    padding: 0.2rem 0;
 }
 
-.blog-index article .description{
-    font-style: italic;
-    font-size: 0.9rem;
+.blog-index .article-list li.article {
+    display: flex;
 }
+
+.blog-index .article-list li.article:hover{
+    background-color: #FFEBEB;
+}
+
+.blog-index .article time {
+    /* font-size: 0.8rem; */
+    color: #888;
+    padding-right: 0.5rem;
+    white-space: nowrap
+}
+
+.blog-index .article .description{
+    /* font-style: italic; */
+    font-size: 0.9rem;
+    color: #555;
+}
+
+
+
+/***************
+ * Article page
+ ***************/
 
 article {
-    padding-top: 2rem;
+    padding-top: 1rem;
 }
 
 
@@ -142,8 +140,8 @@ article {
 /* code blocks */
 article pre {
     margin: 0 0 2.5rem 0!important;
-    border: solid 1px #000;
-    /* box-shadow: 5px 5px #ccc; */
+    border: dotted 1px #A70000;
+    /* box-shadow: 5px 5px 5px #ccc; */
     padding: 1rem;
     background-color: #fff!important;
     font-size: 0.8rem!important;
@@ -158,14 +156,12 @@ article pre code {
 /* inline <code/> */
 article code {
     background-color: #eee;
+    background-color: #eee;
     padding: 1px 5px;
-    color: #d14;
+    color: #A70000;
     font-family: Menlo, Monaco, "Courier New", monospace;
     font-size: 0.8rem;
     border: 1px solid #ddd;
-}
-
-article em {
 }
 
 article label {
@@ -176,22 +172,23 @@ article label {
 
 article blockquote {
     margin: 2.5rem 2.5rem;
-    border-left: solid 1px;
+    border-left: solid 1px #A70000;
     padding: 0px 1rem;
     font-size: 1rem;
 }
 
 article table {
     margin: 2.5rem 1rem;
-    box-shadow: 5px 5px #ccc;
-    border: solid 1px #000;
+    /* box-shadow: 5px 5px #ccc; */
+    border: dotted 1px #A70000;
     padding: 0.5rem;
     max-width: 100%;
 }
 
 article th {
     font-weight: bold;
-    border-bottom: solid 1px;
+    border-bottom: solid 1px #A70000;
+    padding: 1pxj
 }
 article td, article th {
     padding: 0.3rem 0.5rem;
@@ -208,8 +205,7 @@ article figure * {
 
 article img {
     max-width: 100%;
-    box-shadow: 5px 5px #ccc;
-    border: 1px solid #000;
+    border: 1px dotted #A70000;
     margin: 1.5rem auto;
     display: block;
 }
@@ -246,17 +242,16 @@ article h4,
 article h5,
 article h6 {
 	font-size: 1rem;
-	margin: 3rem 0 0.8rem 0;
+	margin: 2rem 0 0.8rem 0;
 }
 article h1 {
 	font-size: 1.5rem;
 }
 article h2 {
     font-size: 1.1rem;
-    margin-top: 3.3rem;
+    margin-top: 2.2rem;
     margin-bottom: 1rem;
-    /* border-bottom: 1px solid #ccc; */
-    border-bottom: 1px solid #819ff2;
+    border-bottom: 1px solid #A70000;
 }
 
 article details {
@@ -289,3 +284,20 @@ article footer {
     justify-content: space-between;
 }
 
+article aside {
+    border: 2px solid #ccc;
+    margin: 2rem 0;
+    /*border-top: 1px solid #ccc;*/
+}
+
+article aside p {
+    padding: 0 1rem;
+}
+
+article aside::before {
+    content: 'Note:';
+    display: block;
+    font-weight: bold;
+    padding: 0 1rem;
+    /*border: 1px solid #ccc;*/
+}
