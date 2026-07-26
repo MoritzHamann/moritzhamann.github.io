@@ -29,6 +29,16 @@
  * Default
  ************************************/
 
+/* 
+ * Font for monospaced code blocks. Loaded directly rather than from
+ * Google, since the served web version is missing glyphs for box drawing
+ * characters.
+ */
+@font-face {
+  font-family: 'Noto Sans Mono';
+  src: url('/public/NotoSansMono.ttf');
+}
+
 html {
     font-family: 'Verdana', sans-serif;
     font-size: 15px;
@@ -147,21 +157,19 @@ article pre {
     font-size: 0.8rem!important;
 }
 
+/* inline <code/> */
 article pre code {
     background-color: #fff;
     border: none;
     padding: 0;
-}
+    white-space: pre;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0;
+    font-family: "Noto Sans Mono", Menlo, Monaco, "Courier New", monospace;
+    /* font-family: monospace; */
+    font-optical-sizing: auto;
 
-/* inline <code/> */
-article code {
-    background-color: #eee;
-    background-color: #eee;
-    padding: 1px 5px;
     color: #A70000;
-    font-family: Menlo, Monaco, "Courier New", monospace;
-    font-size: 0.8rem;
-    border: 1px solid #ddd;
 }
 
 article label {
