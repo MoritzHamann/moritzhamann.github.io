@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Moritz Hamann]]></title><description><![CDATA[Personal blog]]></description><link>http://moritzhamann.com</link><image><url>http://moritzhamann.com/favicon.ico</url><title>Moritz Hamann</title><link>http://moritzhamann.com</link></image><generator>RSS for Node</generator><lastBuildDate>Thu, 16 Jul 2026 23:23:50 GMT</lastBuildDate><atom:link href="http://moritzhamann.com/feed.xml" rel="self" type="application/rss+xml"/><author><![CDATA[Moritz Hamann]]></author><item><title><![CDATA[New site - new ambitions]]></title><description><![CDATA[<p>Over the course of the last few weekends I finally took the time to revive this blog.
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Moritz Hamann]]></title><description><![CDATA[Personal blog]]></description><link>http://moritzhamann.com</link><image><url>http://moritzhamann.com/favicon.ico</url><title>Moritz Hamann</title><link>http://moritzhamann.com</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 27 Jul 2026 18:03:15 GMT</lastBuildDate><atom:link href="http://moritzhamann.com/feed.xml" rel="self" type="application/rss+xml"/><author><![CDATA[Moritz Hamann]]></author><item><title><![CDATA[New site - new ambitions]]></title><description><![CDATA[<p>Over the course of the last few weekends I finally took the time to revive this blog.
 In the process I've scraped the old <a href="https://gohugo.io">Hugo</a> based site and redone it entirely in
 <a href="https://metalsmith.io">metalsmith</a>.</p>
 <p>This post tries to shed some background on the reasons (spoiler: personal preferences), how metalsmith
@@ -494,4 +494,68 @@ directory.</p>
 the <code>ocamlformat</code> tool will <strong>not</strong> change any files. To solve the issue, simply add a <code>.ocamlformat</code> file at the root
 of your project (even an empty one should do). For more details on the formatting options available via this file, run
 <code>man ocamlformat</code> or check the <a href="https://ocaml.org/p/ocamlformat/0.26.2/doc/index.html">online documentation</a>.</p>
-]]></description><link>http://moritzhamann.com/blog/2024-12-18-ocamllsp-in-neovim.html</link><guid isPermaLink="true">http://moritzhamann.com/blog/2024-12-18-ocamllsp-in-neovim.html</guid><category><![CDATA[ocaml]]></category><category><![CDATA[ocamllsp]]></category><category><![CDATA[neovim]]></category><dc:creator><![CDATA[Moritz Hamann]]></dc:creator><pubDate>Wed, 18 Dec 2024 00:00:00 GMT</pubDate></item></channel></rss>
+]]></description><link>http://moritzhamann.com/blog/2024-12-18-ocamllsp-in-neovim.html</link><guid isPermaLink="true">http://moritzhamann.com/blog/2024-12-18-ocamllsp-in-neovim.html</guid><category><![CDATA[ocaml]]></category><category><![CDATA[ocamllsp]]></category><category><![CDATA[neovim]]></category><dc:creator><![CDATA[Moritz Hamann]]></dc:creator><pubDate>Wed, 18 Dec 2024 00:00:00 GMT</pubDate></item><item><title><![CDATA[Fixing miss-aligned monospace text in Android browsers]]></title><description><![CDATA[<!-- custom font loaded on this page only -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+.code-non-aligned-android {
+    font-family: "Noto Sans Mono";
+}
+</style>
+
+
+<p>I've recently tried to render some ASCII diagrams like the one below in a <code>&lt;pre&gt;</code> tag in HTML. While
+it looked fine in Neovim and in the MacOS and iOS browsers, I've noticed that on Android the boxes
+were slightly misaligned. </p>
+<pre><code class="code-non-aligned-android">
+     │
+┌────▼─────┐
+│  Phase 1 │
+└────┬─────┘
+     │
+┌────▼─────┐
+│  Phase 2 │
+└────┬─────┘
+     │
+     ▼     
+
+</code></pre>
+
+<p><em>Original</em>: the diagram above should <strong>not</strong> align on Android devices</p>
+<pre><code>     │
+┌────▼─────┐
+│  Phase 1 │
+└────┬─────┘
+     │
+┌────▼─────┐
+│  Phase 2 │
+└────┬─────┘
+     │
+     ▼     
+</code></pre>
+<p><em>Fixed</em>: the diagram above should <strong>correctly</strong> align on Android devices</p>
+<p>A Google search showed that this seems to be a common problem, but no solutions was immediately
+obvious. ChatGPT wasn't able to fix the issue, but it at least pointed in the right direction: Even
+with a webfont loaded, the browser is most likely falling back to a system monospace font for glyphs
+that are not available in the (web)font. And for some reason the monospaced system font on Android
+has a different width, resulting in the misalignment.</p>
+<p>Some google searches and multiple different LLMs suggested to load the <em>Noto Sans Mono</em> from Google
+fonts. This font would have no missing glyphs (at least for the box-drawing glyphs) and so no
+fallback <em>should</em> occur. However, after embedding the webfont via a simple <code>&lt;link&gt;</code> tag, the
+miss-alignment persisted. Various others suggested CSS hacks did not fix the problem either. I was
+about to give up, but then found the discussion on the <a href="https://github.com/squidfunk/mkdocs-material/discussions/7449">mkdocs
+org</a> which mentioned that the file
+size of the WOFF2 version of <em>Noto Sans Mono</em> is noticeable smaller than the TTF version since many
+symbols were missing.</p>
+<p>Turns out that the font served from Google fongts via <code>&lt;link&gt;</code> is a most likely a trimmed down
+version. After downloading the <code>.ttf</code> itself and serving it myself, the alignment issue was gone.</p>
+<p>Relevant CSS snippet to embed a <code>.ttf</code> directly in CSS:</p>
+<pre><code class="language-css">@font-face {
+  font-family: "Noto Sans Mono";
+  src: url("/path/to/your.ttf");
+}
+
+pre {
+    font-family: "Noto Sans Mono"
+}
+</code></pre>
+]]></description><link>http://moritzhamann.com/blog/2026-07-26-box-drawing-glyphs-on-android.html</link><guid isPermaLink="true">http://moritzhamann.com/blog/2026-07-26-box-drawing-glyphs-on-android.html</guid><category><![CDATA[android]]></category><category><![CDATA[monospaced]]></category><category><![CDATA[Google fonts]]></category><dc:creator><![CDATA[Moritz Hamann]]></dc:creator><pubDate>Mon, 27 Jul 2026 00:00:00 GMT</pubDate></item></channel></rss>

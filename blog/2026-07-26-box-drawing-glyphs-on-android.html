@@ -1,0 +1,112 @@
+<html lang="en">
+
+<head>
+        <meta charset="utf-8" />
+        <title>Fixing miss-aligned monospace text in Android browsers</title>
+        <meta name="description" content="How to make sure your ASCII diagrams are rendered nicely on Android devices">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/public/prism.css" rel="stylesheet">
+        <script src="/public/prism.js"></script>
+        <link href="/public/site.css" rel="stylesheet">
+        <link href="/feed.xml" rel="alternate" type="application/rss+xml"> 
+        <link href="/favicon.ico" rel="icon">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <script data-goatcounter="https://moritzhamann.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+
+<body class="line-numbers">
+    <nav>
+        <img class="round" src="/public/avatar.jpg" />
+        <div>
+            <div class="name">Moritz (Moe) Hamann</div>
+            <div class="site-navigation">
+                <a href="/">Blog</a> | <a href="/aboutme.html">About me</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Fixing miss-aligned monospace text in Android browsers</h1>
+            <dl class="metadata">
+                <b>Published:</b> <time datetime="2026-07-27T00:00:00Z">2026-07-27</time>
+            <!--
+            -->
+            </dl>
+        </header>
+        <article>
+            <!-- custom font loaded on this page only -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+.code-non-aligned-android {
+    font-family: "Noto Sans Mono";
+}
+</style>
+
+
+<p>I've recently tried to render some ASCII diagrams like the one below in a <code>&lt;pre&gt;</code> tag in HTML. While
+it looked fine in Neovim and in the MacOS and iOS browsers, I've noticed that on Android the boxes
+were slightly misaligned. </p>
+<pre><code class="code-non-aligned-android">
+     │
+┌────▼─────┐
+│  Phase 1 │
+└────┬─────┘
+     │
+┌────▼─────┐
+│  Phase 2 │
+└────┬─────┘
+     │
+     ▼     
+
+</code></pre>
+
+<p><em>Original</em>: the diagram above should <strong>not</strong> align on Android devices</p>
+<pre><code>     │
+┌────▼─────┐
+│  Phase 1 │
+└────┬─────┘
+     │
+┌────▼─────┐
+│  Phase 2 │
+└────┬─────┘
+     │
+     ▼     
+</code></pre>
+<p><em>Fixed</em>: the diagram above should <strong>correctly</strong> align on Android devices</p>
+<p>A Google search showed that this seems to be a common problem, but no solutions was immediately
+obvious. ChatGPT wasn't able to fix the issue, but it at least pointed in the right direction: Even
+with a webfont loaded, the browser is most likely falling back to a system monospace font for glyphs
+that are not available in the (web)font. And for some reason the monospaced system font on Android
+has a different width, resulting in the misalignment.</p>
+<p>Some google searches and multiple different LLMs suggested to load the <em>Noto Sans Mono</em> from Google
+fonts. This font would have no missing glyphs (at least for the box-drawing glyphs) and so no
+fallback <em>should</em> occur. However, after embedding the webfont via a simple <code>&lt;link&gt;</code> tag, the
+miss-alignment persisted. Various others suggested CSS hacks did not fix the problem either. I was
+about to give up, but then found the discussion on the <a href="https://github.com/squidfunk/mkdocs-material/discussions/7449">mkdocs
+org</a> which mentioned that the file
+size of the WOFF2 version of <em>Noto Sans Mono</em> is noticeable smaller than the TTF version since many
+symbols were missing.</p>
+<p>Turns out that the font served from Google fongts via <code>&lt;link&gt;</code> is a most likely a trimmed down
+version. After downloading the <code>.ttf</code> itself and serving it myself, the alignment issue was gone.</p>
+<p>Relevant CSS snippet to embed a <code>.ttf</code> directly in CSS:</p>
+<pre><code class="language-css">@font-face {
+  font-family: "Noto Sans Mono";
+  src: url("/path/to/your.ttf");
+}
+
+pre {
+    font-family: "Noto Sans Mono"
+}
+</code></pre>
+
+            <footer>
+                    <a href="/">Back to blog</a>
+                   <a href="/blog/2024-12-18-ocamllsp-in-neovim.html">Neovim: Tips and tricks for OCaml&#x27;s LSP server ></a>
+            </footer>
+        </article>
+    </main>
+</body>
+
+</html>
